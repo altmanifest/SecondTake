@@ -1,5 +1,7 @@
 package com.altmanifest.secondtake
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
@@ -10,6 +12,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.altmanifest.secondtake.ui.screens.OnboardingScreen
+import com.altmanifest.secondtake.ui.screens.StartScreen
 
 enum class SecondTakeRoutes {
     Onboarding,
@@ -23,13 +27,24 @@ fun SecondTakeApp(
     navController: NavHostController = rememberNavController(),
 ) {
     val modifier = Modifier
-        .background(color = MaterialTheme.colorScheme.primaryContainer)
+        .background(MaterialTheme.colorScheme.background)
         .safeContentPadding()
         .fillMaxSize()
 
     NavHost(
         navController = navController,
-        startDestination = SecondTakeRoutes.Onboarding.name
+        startDestination = SecondTakeRoutes.Onboarding.name,
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(durationMillis = 500)
+            )},
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(durationMillis = 500)
+            )},
+        modifier = modifier
     ) {
         composable(route = SecondTakeRoutes.Onboarding.name) {
             OnboardingScreen(
