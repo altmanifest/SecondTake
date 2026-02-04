@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.altmanifest.secondtake.ui.components.CustomButton
+import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.CustomHeading
 import com.altmanifest.secondtake.ui.components.FilmwebButton
 import com.altmanifest.secondtake.ui.components.IMDBButton
@@ -35,15 +35,33 @@ fun OnboardingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        CustomHeading(text = "Connect\nServices")
+        CustomHeading(
+            text = "Connect Services",
+            modifier = Modifier.fillMaxWidth(0.75f)
+        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
-            IMDBButton(true, ::connectProvider, false)
-            FilmwebButton(true, ::connectProvider, false)
-            OnlyFilmsButton(true, ::connectProvider, false)
+            IMDBButton(
+                enabled = true,
+                { connectProvider() },
+                false,
+                modifier = Modifier.fillMaxWidth(0.75f)
+            )
+            FilmwebButton(
+                true,
+                { connectProvider() },
+                false,
+                modifier = Modifier.fillMaxWidth(0.75f)
+            )
+            OnlyFilmsButton(
+                true,
+                { connectProvider() },
+                false,
+                modifier = Modifier.fillMaxWidth(0.75f)
+            )
         }
 
         Box(
@@ -53,11 +71,12 @@ fun OnboardingScreen(
                 .fillMaxWidth()
                 .height(170.dp)
         ) {
-            CustomButton(
+            PrimaryButton(
                 "Continue",
                 true, /** @TODO : Make enabled only true if at least 1 provider is connected */
                 onContinueButtonClicked,
-                false
+                false,
+                modifier = Modifier.fillMaxWidth(0.75f)
             )
         }
     }

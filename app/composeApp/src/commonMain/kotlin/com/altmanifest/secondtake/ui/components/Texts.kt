@@ -13,7 +13,7 @@ import com.altmanifest.secondtake.ui.theme.LatoFontFamily
 import com.altmanifest.secondtake.ui.theme.TextColor
 
 @Composable
-fun CustomHeading(text: String) {
+fun CustomHeading(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontSize = 40.sp,
@@ -21,18 +21,19 @@ fun CustomHeading(text: String) {
         textAlign = TextAlign.Center,
         fontFamily = AlfaSlabOneFontFamily(),
         lineHeight = 55.sp,
+        modifier = modifier
         )
 }
 
 @Composable
-fun ClickableText(text: String, onClick: () -> Unit) {
+fun ClickableText(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontFamily = LatoFontFamily(),
         fontSize = 20.sp,
         color = TextColor,
         style = TextStyle(textDecoration = TextDecoration.Underline),
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick),
         textAlign = TextAlign.Center
     )
 }
