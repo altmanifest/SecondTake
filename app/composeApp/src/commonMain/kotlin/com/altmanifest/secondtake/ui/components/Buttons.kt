@@ -1,15 +1,23 @@
 package com.altmanifest.secondtake.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -20,14 +28,10 @@ import androidx.compose.ui.unit.sp
 import com.altmanifest.secondtake.ui.theme.PrimaryButtonColor
 import androidx.compose.ui.unit.dp
 import com.altmanifest.secondtake.ui.theme.FilmWebButtonColor
-import com.altmanifest.secondtake.ui.theme.FilmwebFontShadowColor
 import com.altmanifest.secondtake.ui.theme.IMDBButtonColor
-import com.altmanifest.secondtake.ui.theme.IMDBFontShadowColor
 import com.altmanifest.secondtake.ui.theme.LatoFontFamily
 import com.altmanifest.secondtake.ui.theme.OnlyfilmsButtonColor
-import com.altmanifest.secondtake.ui.theme.OnlyfilmsFontShadowColor
-import com.altmanifest.secondtake.ui.theme.PrimaryDisabledFontShadowColor
-import com.altmanifest.secondtake.ui.theme.PrimaryFontShadowColor
+import com.altmanifest.secondtake.ui.utility.darken
 import org.jetbrains.compose.resources.painterResource
 import secondtake.composeapp.generated.resources.Filmweb
 import secondtake.composeapp.generated.resources.IMDB_Logo_2016
@@ -35,158 +39,153 @@ import secondtake.composeapp.generated.resources.Onlyfilms
 import secondtake.composeapp.generated.resources.Res
 
 @Composable
-fun CustomButton(text: String, enabled: Boolean = true, onClick: () -> Unit, isLoading: Boolean = false) {
-    val currentFontShadowColor = if (enabled && !isLoading) PrimaryFontShadowColor else PrimaryDisabledFontShadowColor
+fun BaseButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    buttonColor: ButtonColors = PrimaryButtonColor,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+    ) {
+    var buttonEnabled by remember {mutableStateOf(enabled) }
+    LaunchedEffect(isLoading, enabled){
+        buttonEnabled = if (isLoading) false else enabled
+    }
 
     Button(
         onClick = onClick,
-        enabled = if (isLoading) false else enabled,
-        colors = PrimaryButtonColor,
+        enabled = if (isLoading) false else buttonEnabled,
+        colors = buttonColor,
         shape = RoundedCornerShape(20),
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
             .height(80.dp)
-            .width(296.dp)
             .drawBehind {
             // Create a hard shadow matching box-shadow: 0 6px 0 0
             drawRoundRect(
-                color = currentFontShadowColor,
+                color = if (buttonEnabled) {
+                    buttonColor.containerColor.darken(0.6f)
+                } else {
+                    buttonColor.disabledContainerColor.darken((0.6f))
+                },
                 topLeft = Offset(0f, 6.dp.toPx()), // Vertical offset
                 size = size,
-                cornerRadius = CornerRadius(20.dp.toPx()) // Should match the Button's shape
+                cornerRadius = CornerRadius(20.dp.toPx())
             )}
         ) {
         if (!isLoading) {
-            Text(
-                text = text,
-                fontSize = 32.sp,
-            )
+            content()
         } else {
             CircularProgressIndicator(
                 modifier = Modifier.width(48.dp).height(48.dp),
-                currentFontShadowColor
+                color = if(buttonEnabled) buttonColor.contentColor else buttonColor.disabledContentColor
             )
         }
     }
 }
 
 @Composable
-fun IMDBButton(enabled: Boolean = true, onClick: () -> Unit, isLoading: Boolean = false) {
-    val currentFontShadowColor = if (enabled && !isLoading) IMDBFontShadowColor else PrimaryDisabledFontShadowColor
-
-    Button(
+fun PrimaryButton(
+    text: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier) {
+    BaseButton(
+        enabled = enabled,
         onClick = onClick,
-        enabled = if (isLoading) false else enabled,
-        colors = IMDBButtonColor,
-        shape = RoundedCornerShape(20),
-        modifier = Modifier
-            .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
-            .width(296.dp)
-            .height(80.dp)
-            .drawBehind {
-            // Create a hard shadow matching box-shadow: 0 6px 0 0
-            drawRoundRect(
-                color = currentFontShadowColor,
-                topLeft = Offset(0f, 6.dp.toPx()), // Vertical offset
-                size = size,
-                cornerRadius = CornerRadius(20.dp.toPx()) // Should match the Button's shape
-            )}
+        isLoading = isLoading,
+        buttonColor = PrimaryButtonColor,
+        modifier = modifier
     ) {
-        if (!isLoading) {
-            Icon(
-                painter = painterResource(Res.drawable.IMDB_Logo_2016),
-                contentDescription = null,
-                Modifier.height(30.dp).width(74.dp)
-            )
-        } else {
-            CircularProgressIndicator(
-                modifier = Modifier.width(48.dp).height(48.dp),
-                currentFontShadowColor
-            )
-        }
+        Text(
+            text = text,
+            fontSize = 32.sp,
+        )
     }
 }
 
 @Composable
-fun FilmwebButton(enabled: Boolean = true, onClick: () -> Unit, isLoading: Boolean = false) {
-    val currentFontShadowColor = if (enabled && !isLoading) FilmwebFontShadowColor else PrimaryDisabledFontShadowColor
+fun IMDBButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    val icon = painterResource(Res.drawable.IMDB_Logo_2016)
 
-    Button(
+    BaseButton(
         onClick = onClick,
         enabled = if (isLoading) false else enabled,
-        colors = FilmWebButtonColor,
-        shape = RoundedCornerShape(20),
-        modifier = Modifier
-            .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
-            .width(296.dp)
-            .height(80.dp)
-            .drawBehind {
-                // Create a hard shadow matching box-shadow: 0 6px 0 0
-                drawRoundRect(
-                    color = currentFontShadowColor,
-                    topLeft = Offset(0f, 6.dp.toPx()), // Vertical offset
-                    size = size,
-                    cornerRadius = CornerRadius(20.dp.toPx()) // Should match the Button's shape
-                )}
+        buttonColor = IMDBButtonColor,
+        isLoading = isLoading,
+        modifier = modifier
     ) {
-        if (!isLoading) {
-            Image(
-                painter = painterResource(Res.drawable.Filmweb),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(32.dp)
-                    .width(130.dp),
-                contentScale = androidx.compose.ui.layout.ContentScale.FillBounds,
-                colorFilter = ColorFilter.tint(currentFontShadowColor)
-            )
-        } else {
-            CircularProgressIndicator(
-                modifier = Modifier.width(48.dp).height(48.dp),
-                color = currentFontShadowColor
-            )
-        }
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            Modifier
+                .fillMaxHeight(0.63f)
+                .aspectRatio(icon.intrinsicSize.width / icon.intrinsicSize.height)
+        )
+    }
+}
+
+@Composable
+fun FilmwebButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    val image = painterResource(Res.drawable.Filmweb)
+
+    BaseButton(
+        onClick = onClick,
+        enabled = if (isLoading) false else enabled,
+        buttonColor = FilmWebButtonColor,
+        isLoading = isLoading,
+        modifier = modifier,
+    ) {
+        Image(
+            painter = image,
+            contentDescription = null,
+            Modifier
+                .height(32.dp)
+                .width(130.dp),
+            contentScale = androidx.compose.ui.layout.ContentScale.FillBounds,
+            colorFilter = ColorFilter.tint(FilmWebButtonColor.contentColor  )
+        )
     }
 }
 @Composable
-fun OnlyFilmsButton(enabled: Boolean = true, onClick: () -> Unit, isLoading: Boolean = false) {
-    val currentFontShadowColor = if (enabled && !isLoading) OnlyfilmsFontShadowColor else PrimaryDisabledFontShadowColor
+fun OnlyFilmsButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+    isLoading: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    val icon = painterResource(Res.drawable.Onlyfilms)
 
-    Button(
+    BaseButton(
         onClick = onClick,
         enabled = if (isLoading) false else enabled,
-        colors = OnlyfilmsButtonColor,
-        shape = RoundedCornerShape(20),
-        modifier = Modifier
-            .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
-            .width(296.dp)
-            .height(80.dp)
-            .drawBehind {
-                drawRoundRect(
-                    color = currentFontShadowColor,
-                    topLeft = Offset(0f, 6.dp.toPx()), // Vertical offset
-                    size = size,
-                    cornerRadius = CornerRadius(20.dp.toPx()) // Should match the Button's shape
-                )}
+        buttonColor = OnlyfilmsButtonColor,
+        isLoading = isLoading,
+        modifier = modifier
     ) {
-        if (!isLoading) {
-            Icon(
-                painter = painterResource(Res.drawable.Onlyfilms),
-                contentDescription = null,
-                Modifier
-                    .padding(end = 2.dp)
-                    .width(48.dp)
-                    .height(48.dp)
-            )
-            Text(text = "OnlyFilms",
-                fontFamily = LatoFontFamily(),
-                fontSize = 26.sp,
-                fontWeight = FontWeight(700)
-            )
-        } else {
-            CircularProgressIndicator(
-                modifier = Modifier.width(48.dp).height(48.dp),
-                color = currentFontShadowColor
-            )
-        }
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            Modifier
+                .padding(end = 3.dp)
+                .fillMaxHeight(0.63f)
+                .aspectRatio(icon.intrinsicSize.width / icon.intrinsicSize.height),
+        )
+        Text(text = "OnlyFilms",
+            fontFamily = LatoFontFamily(),
+            fontSize = 26.sp,
+            fontWeight = FontWeight(700)
+        )
     }
 }

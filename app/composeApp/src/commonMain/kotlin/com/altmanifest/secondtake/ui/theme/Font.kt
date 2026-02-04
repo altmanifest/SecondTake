@@ -8,16 +8,9 @@ import androidx.compose.ui.text.font.FontWeight
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.Font
 import secondtake.composeapp.generated.resources.AlfaSlabOne_Regular
-import secondtake.composeapp.generated.resources.Lato_Black
-import secondtake.composeapp.generated.resources.Lato_BlackItalic
 import secondtake.composeapp.generated.resources.Lato_Bold
-import secondtake.composeapp.generated.resources.Lato_BoldItalic
 import secondtake.composeapp.generated.resources.Lato_Italic
-import secondtake.composeapp.generated.resources.Lato_Light
-import secondtake.composeapp.generated.resources.Lato_LightItalic
 import secondtake.composeapp.generated.resources.Lato_Regular
-import secondtake.composeapp.generated.resources.Lato_Thin
-import secondtake.composeapp.generated.resources.Lato_ThinItalic
 import secondtake.composeapp.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
@@ -28,16 +21,9 @@ fun AlfaSlabOneFontFamily() = FontFamily(
 
 @Composable
 fun LatoFontFamily() = FontFamily(
-    Font(Res.font.Lato_Thin, FontWeight.Thin),
-    Font(Res.font.Lato_ThinItalic, FontWeight.Thin, FontStyle.Italic),
-    Font(Res.font.Lato_Light, FontWeight.Light),
-    Font(Res.font.Lato_LightItalic, FontWeight.Light, FontStyle.Italic),
     Font(Res.font.Lato_Regular, FontWeight.Normal),
     Font(Res.font.Lato_Italic, FontWeight.Normal, FontStyle.Italic),
     Font(Res.font.Lato_Bold, FontWeight.Bold),
-    Font(Res.font.Lato_BoldItalic, FontWeight.Bold, FontStyle.Italic),
-    Font(Res.font.Lato_Black, FontWeight.Black),
-    Font(Res.font.Lato_BlackItalic, FontWeight.Black, FontStyle.Italic)
 )
 
 @Composable
