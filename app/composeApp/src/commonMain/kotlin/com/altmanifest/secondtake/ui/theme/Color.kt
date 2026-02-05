@@ -20,25 +20,25 @@ val SurfaceBorderColor = Color(0xFF383838)
 val BackgroundColor = Color(0xFF0D0D0D)
 
 val PrimaryButtonColor = ButtonColors(
-    PrimaryColor,
-    PrimaryFontShadowColor,
-    PrimaryDisabledColor,
-    PrimaryDisabledFontShadowColor)
+    containerColor = PrimaryColor,
+    contentColor = PrimaryFontShadowColor,
+    disabledContainerColor = PrimaryDisabledColor,
+    disabledContentColor = PrimaryDisabledFontShadowColor)
 
 val IMDBButtonColor = ButtonColors(
-    IMDBColor,
-    IMDBFontShadowColor,
-    PrimaryDisabledColor,
-    PrimaryDisabledFontShadowColor)
+    containerColor = IMDBColor,
+    contentColor = IMDBFontShadowColor,
+    disabledContainerColor = PrimaryDisabledColor,
+    disabledContentColor = PrimaryDisabledFontShadowColor)
 
 val FilmWebButtonColor = ButtonColors(
-    FilmwebColor,
-    FilmwebFontShadowColor,
-    PrimaryDisabledColor,
-    PrimaryDisabledFontShadowColor)
+    containerColor = FilmwebColor,
+    contentColor = FilmwebFontShadowColor,
+    disabledContainerColor = PrimaryDisabledColor,
+    disabledContentColor = PrimaryDisabledFontShadowColor)
 
 val OnlyfilmsButtonColor = ButtonColors(
-    OnlyfilmsColor,
-    OnlyfilmsFontShadowColor,
-    PrimaryDisabledColor,
-    PrimaryDisabledFontShadowColor)
+    containerColor = OnlyfilmsColor,
+    contentColor = OnlyfilmsFontShadowColor,
+    disabledContainerColor = PrimaryDisabledColor,
+    disabledContentColor = PrimaryDisabledFontShadowColor)

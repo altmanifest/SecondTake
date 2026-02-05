@@ -13,11 +13,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
@@ -47,14 +42,11 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
     ) {
-    var buttonEnabled by remember {mutableStateOf(enabled) }
-    LaunchedEffect(isLoading, enabled){
-        buttonEnabled = if (isLoading) false else enabled
-    }
+    val isButtonEnabled = enabled && !isLoading
 
     Button(
         onClick = onClick,
-        enabled = if (isLoading) false else buttonEnabled,
+        enabled = isButtonEnabled,
         colors = buttonColor,
         shape = RoundedCornerShape(20),
         modifier = modifier
@@ -63,7 +55,7 @@ fun BaseButton(
             .drawBehind {
             // Create a hard shadow matching box-shadow: 0 6px 0 0
             drawRoundRect(
-                color = if (buttonEnabled) {
+                color = if (isButtonEnabled) {
                     buttonColor.containerColor.darken(0.6f)
                 } else {
                     buttonColor.disabledContainerColor.darken((0.6f))
@@ -78,7 +70,7 @@ fun BaseButton(
         } else {
             CircularProgressIndicator(
                 modifier = Modifier.width(48.dp).height(48.dp),
-                color = if(buttonEnabled) buttonColor.contentColor else buttonColor.disabledContentColor
+                color = if(isButtonEnabled) buttonColor.contentColor else buttonColor.disabledContentColor
             )
         }
     }
