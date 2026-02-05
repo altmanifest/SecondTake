@@ -23,7 +23,8 @@ fun StartScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(0.75f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -47,7 +48,6 @@ fun StartScreen(
             PrimaryButton(
                 text = "Compare",
                 onClick = onCompareButtonClicked,
-                modifier = Modifier.fillMaxWidth(0.75f)
             )
             Spacer(modifier = Modifier.fillMaxHeight(0.05f))
             ClickableText(text = "Forgotten Titles" , onClick = onForgottenTitlesLinkClicked)
