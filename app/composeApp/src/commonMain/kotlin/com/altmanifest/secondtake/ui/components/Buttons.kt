@@ -1,6 +1,9 @@
 package com.altmanifest.secondtake.ui.components
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
@@ -13,11 +16,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.altmanifest.secondtake.ui.theme.PrimaryButtonColor
@@ -42,6 +48,15 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
     ) {
+    //declaration for press-animation
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val pressOffset by animateDpAsState(
+        targetValue = if (isPressed) 6.dp else 0.dp,
+        label = "buttonPressAnimation"
+    )
+
     val isButtonEnabled = enabled && !isLoading
 
     Button(
@@ -49,21 +64,29 @@ fun BaseButton(
         enabled = isButtonEnabled,
         colors = buttonColor,
         shape = RoundedCornerShape(20),
+        interactionSource = interactionSource,
         modifier = modifier
             .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
             .height(80.dp)
+            .graphicsLayer {
+                translationY = pressOffset.toPx()
+            }
             .drawBehind {
-            // Create a hard shadow matching box-shadow: 0 6px 0 0
-            drawRoundRect(
-                color = if (isButtonEnabled) {
-                    buttonColor.containerColor.darken(0.6f)
-                } else {
-                    buttonColor.disabledContainerColor.darken((0.6f))
-                },
-                topLeft = Offset(0f, 6.dp.toPx()), // Vertical offset
-                size = size,
-                cornerRadius = CornerRadius(20.dp.toPx())
-            )}
+                //Calculate shadow offset
+                // If button pressed -> minimize shadow offset
+                val currentShadowOffset = 6.dp.toPx() - pressOffset.toPx()
+
+                drawRoundRect(
+                    color = if (isButtonEnabled) {
+                        buttonColor.containerColor.darken(0.6f)
+                    } else {
+                        buttonColor.disabledContainerColor.darken(0.6f)
+                    },
+                    topLeft = Offset(0f, currentShadowOffset),
+                    size = size,
+                    cornerRadius = CornerRadius(20.dp.toPx())
+                )
+            }
         ) {
         if (!isLoading) {
             content()
