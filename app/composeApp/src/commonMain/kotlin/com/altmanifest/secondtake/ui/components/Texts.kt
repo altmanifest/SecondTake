@@ -1,6 +1,7 @@
 package com.altmanifest.secondtake.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ fun CustomHeading(text: String, modifier: Modifier = Modifier) {
         fontFamily = AlfaSlabOneFontFamily(),
         lineHeight = 55.sp,
         modifier = modifier
+            .fillMaxWidth(0.75f)
         )
 }
 
@@ -33,7 +35,9 @@ fun ClickableText(text: String, onClick: () -> Unit, modifier: Modifier = Modifi
         fontSize = 20.sp,
         color = TextColor,
         style = TextStyle(textDecoration = TextDecoration.Underline),
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .fillMaxWidth(0.75f),
         textAlign = TextAlign.Center
     )
 }
