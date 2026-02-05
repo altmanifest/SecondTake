@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.altmanifest.secondtake.ui.screens.OnboardingScreen
+import com.altmanifest.secondtake.ui.screens.ProviderSelectionScreen
 import com.altmanifest.secondtake.ui.screens.StartScreen
 
 enum class SecondTakeRoutes {
@@ -56,6 +57,13 @@ fun SecondTakeApp(
             StartScreen(
                 onCompareButtonClicked = { navController.navigate(route = SecondTakeRoutes.ProviderSelection.name) },
                 onForgottenTitlesLinkClicked = { navController.navigate(route = SecondTakeRoutes.ForgottenTitles.name) },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.ProviderSelection.name) {
+            ProviderSelectionScreen(
+                onProviderButtonClicked = { navController.navigate(route = SecondTakeRoutes.Onboarding.name) },
+                onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }

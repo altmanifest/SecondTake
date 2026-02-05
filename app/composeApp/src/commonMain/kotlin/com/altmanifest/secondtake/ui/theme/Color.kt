@@ -1,6 +1,7 @@
 package com.altmanifest.secondtake.ui.theme
 
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.ui.graphics.Color
 
 val PrimaryColor = Color(0xFF00D1FF)
@@ -42,3 +43,10 @@ val OnlyfilmsButtonColor = ButtonColors(
     contentColor = OnlyfilmsFontShadowColor,
     disabledContainerColor = PrimaryDisabledColor,
     disabledContentColor = PrimaryDisabledFontShadowColor)
+
+val IconButtonColor = IconButtonColors(
+    containerColor = Color.Transparent,
+    contentColor = TextColor,
+    disabledContentColor = TextColor.copy(alpha = 0.38f),
+    disabledContainerColor = Color.Transparent
+)

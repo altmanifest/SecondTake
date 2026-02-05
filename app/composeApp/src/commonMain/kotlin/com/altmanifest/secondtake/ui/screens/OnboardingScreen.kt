@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.CustomHeading
 import com.altmanifest.secondtake.ui.components.FilmwebButton
+import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.IMDBButton
 import com.altmanifest.secondtake.ui.components.OnlyFilmsButton
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
@@ -34,9 +35,7 @@ fun OnboardingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        CustomHeading(
-            text = "Connect Services",
-        )
+        Header(heading = "Connect services")
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
