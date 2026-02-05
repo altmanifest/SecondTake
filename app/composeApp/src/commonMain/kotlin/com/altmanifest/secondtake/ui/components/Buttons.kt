@@ -48,16 +48,18 @@ fun BaseButton(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
     ) {
+    val isButtonEnabled = enabled && !isLoading
+
     //declaration for press-animation
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val isPressedAsState = interactionSource.collectIsPressedAsState()
+    val isPressed = !isButtonEnabled || isPressedAsState.value
 
     val pressOffset by animateDpAsState(
         targetValue = if (isPressed) 6.dp else 0.dp,
         label = "buttonPressAnimation"
     )
 
-    val isButtonEnabled = enabled && !isLoading
 
     Button(
         onClick = onClick,
