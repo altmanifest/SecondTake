@@ -16,14 +16,14 @@ import secondtake.composeapp.generated.resources.Res
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AlfaSlabOneFontFamily() = FontFamily(
-    Font(Res.font.AlfaSlabOne_Regular, FontWeight.Normal)
+    Font(resource = Res.font.AlfaSlabOne_Regular, weight = FontWeight.Normal)
 )
 
 @Composable
 fun LatoFontFamily() = FontFamily(
-    Font(Res.font.Lato_Regular, FontWeight.Normal),
-    Font(Res.font.Lato_Italic, FontWeight.Normal, FontStyle.Italic),
-    Font(Res.font.Lato_Bold, FontWeight.Bold),
+    Font(resource = Res.font.Lato_Regular, weight = FontWeight.Normal),
+    Font(resource = Res.font.Lato_Italic, weight = FontWeight.Normal, style = FontStyle.Italic),
+    Font(resource = Res.font.Lato_Bold, weight = FontWeight.Bold),
 )
 
 @Composable
