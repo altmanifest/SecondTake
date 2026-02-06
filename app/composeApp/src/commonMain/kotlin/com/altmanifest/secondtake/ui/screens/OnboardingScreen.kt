@@ -36,7 +36,6 @@ fun OnboardingScreen(
     ) {
         CustomHeading(
             text = "Connect Services",
-            modifier = Modifier.fillMaxWidth(0.75f)
         )
 
         Column(
@@ -47,19 +46,16 @@ fun OnboardingScreen(
                 enabled = true,
                 onClick = { connectProvider() },
                 isLoading =false,
-                modifier = Modifier.fillMaxWidth(0.75f)
             )
             FilmwebButton(
                 enabled = true,
                 onClick = { connectProvider() },
                 isLoading = false,
-                modifier = Modifier.fillMaxWidth(0.75f)
             )
             OnlyFilmsButton(
                 enabled = true,
                 onClick = { connectProvider() },
                 isLoading = false,
-                modifier = Modifier.fillMaxWidth(0.75f)
             )
         }
 
@@ -75,7 +71,6 @@ fun OnboardingScreen(
                 enabled = true, /** @TODO : Make enabled only true if at least 1 provider is connected */
                 onClick = onContinueButtonClicked,
                 isLoading = false,
-                modifier = Modifier.fillMaxWidth(0.75f)
             )
         }
     }
