@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.altmanifest.secondtake.ui.components.PrimaryButton
-import com.altmanifest.secondtake.ui.components.CustomHeading
 import com.altmanifest.secondtake.ui.components.FilmwebButton
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.IMDBButton
