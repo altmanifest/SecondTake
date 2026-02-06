@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -70,6 +71,7 @@ fun BaseButton(
         modifier = modifier
             .padding(start = 12.dp, top = 16.dp, end = 12.dp, bottom = 16.dp)
             .height(80.dp)
+            .fillMaxWidth(0.75f)
             .graphicsLayer {
                 translationY = pressOffset.toPx()
             }
