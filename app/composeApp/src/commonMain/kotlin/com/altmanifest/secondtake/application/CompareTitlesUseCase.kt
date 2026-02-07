@@ -9,7 +9,7 @@ import com.altmanifest.secondtake.domain.Session
 import com.altmanifest.secondtake.domain.Session.Companion.createSession
 import kotlin.time.Duration
 
-class CompareTitles(private val titleProvider: TitleProvider, private val config: Config) {
+class CompareTitlesUseCase(private val titleProvider: TitleProvider, private val config: Config) {
     fun startSession(): CreateResult =
         when (val schedule = titleProvider.getAll().scheduleForComparison(config.comparisons)) {
             is ComparisonSchedule.CreateResult.NoComparisons -> CreateResult.NoComparisons
