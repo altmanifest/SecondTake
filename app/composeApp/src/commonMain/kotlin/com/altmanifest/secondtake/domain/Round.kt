@@ -1,16 +1,16 @@
 package com.altmanifest.secondtake.domain
 
-class Session private constructor(private val schedule: ComparisonSchedule) {
-    private val decisions = mutableListOf<Decision>()
+class Round private constructor(private val schedule: ComparisonSchedule) {
+    private val ratings = mutableListOf<Comparison.Rating>()
     var index = 0
 
     fun rateCurrent(preference: Preference, ratingStrength: Comparison.Rating.Strength): State {
         if (index >= schedule.size) {
-            return State.Finished(decisions.toList())
+            return State.Finished(ratings.toList())
         }
 
         val comparison = schedule.comparisonAt(position = index)
-        decisions += Decision.Rated(rating = comparison.rate(preference, ratingStrength))
+        ratings += comparison.rate(preference, ratingStrength)
         index++
 
         return if (index < schedule.size) {
@@ -24,37 +24,32 @@ class Session private constructor(private val schedule: ComparisonSchedule) {
                 )
             )
         } else {
-            State.Finished(decisions.toList())
+            State.Finished(ratings.toList())
         }
     }
 
     companion object {
-        fun ComparisonSchedule.createSession(capacity: Capacity) =
+        fun ComparisonSchedule.createRound(capacity: Capacity) =
             CreateResult(
-                first = Snapshot(
+                initialSnapshot = Snapshot(
                     comparison = this.comparisonAt(position = 0).view(),
                     progress = Progress(
                         current = 1,
                         total = capacity.value
                     )
                 ),
-                session = Session(schedule = this.takeFirst(capacity.value))
+                round = Round(schedule = this.takeFirst(capacity.value))
             )
-    }
-
-
-    sealed class Decision {
-        data class Rated(val rating: Comparison.Rating) : Decision()
     }
 
     sealed class State {
         data class Ongoing(val snapshot: Snapshot) : State()
-        data class Finished(val decision: List<Decision>) : State()
+        data class Finished(val ratings: List<Comparison.Rating>) : State()
     }
 
     data class Snapshot(val comparison: Comparison.View, val progress: Progress)
     data class Progress(val current: Int, val total: Int)
-    data class CreateResult(val first: Snapshot, val session: Session)
+    data class CreateResult(val initialSnapshot: Snapshot, val round: Round)
 
     value class Capacity(val value: Int)
 }
