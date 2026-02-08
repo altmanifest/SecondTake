@@ -35,6 +35,8 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
                 }
             }
 
+            println(comparisons)
+
             return when {
                 comparisons.isEmpty() -> CreateResult.NoComparisons
                 else -> CreateResult.Success(ComparisonSchedule(comparisons))

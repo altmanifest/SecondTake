@@ -14,11 +14,14 @@ val FilmwebColor = Color(0xFFFFC300)
 val FilmwebFontShadowColor = Color(0xFF664E00)
 val OnlyfilmsColor = Color(0xFF00AFF0)
 val OnlyfilmsFontShadowColor = Color(0xFF004761)
+val MockifyColor = Color(0xFF2ECC71)
+val MockifyFontShadowColor = Color(0xFF145229)
 val DangerColor = Color(0xFFFF4B4B)
 val TextColor = Color(0xFFEBEBEB)
 val SurfaceColor = Color(0xFF1E1E1E)
 val SurfaceBorderColor = Color(0xFF383838)
 val BackgroundColor = Color(0xFF0D0D0D)
+val StarRatingColor = Color(0xFFF4C418)
 
 val PrimaryButtonColor = ButtonColors(
     containerColor = PrimaryColor,
@@ -49,4 +52,11 @@ val IconButtonColor = IconButtonColors(
     contentColor = TextColor,
     disabledContentColor = TextColor.copy(alpha = 0.38f),
     disabledContainerColor = Color.Transparent
+)
+
+val MockifyButtonColor = ButtonColors(
+    containerColor = MockifyColor,
+    contentColor = MockifyFontShadowColor,
+    disabledContainerColor = PrimaryDisabledColor,
+    disabledContentColor = PrimaryDisabledFontShadowColor
 )
