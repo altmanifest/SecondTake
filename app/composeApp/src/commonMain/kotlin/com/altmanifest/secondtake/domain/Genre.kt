@@ -1,3 +1,3 @@
 package com.altmanifest.secondtake.domain
 
-class Genre
+value class Genre(val value: String)
