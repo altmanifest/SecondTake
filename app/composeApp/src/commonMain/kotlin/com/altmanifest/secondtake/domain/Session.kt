@@ -10,7 +10,7 @@ class Session(
     private val skippedComparisons = mutableSetOf<Comparison.View>()
     private val forgotTitle = mutableSetOf<Title>()
 
-    fun handle(action: Action): Round.State {
+    fun handle(action: Action): State {
         val state = when (action) {
             is Action.Rate -> round.rateCurrent(action.preference, action.strength)
             is Action.Forget -> forget(action.choice)
@@ -21,13 +21,16 @@ class Session(
         }
 
         return when (state) {
-            is Round.State.Running -> state
+            is Round.State.Running -> State.Running(state.snapshot)
             is Round.State.Finished -> {
                 val pairsToExclude = skippedComparisons.map { it.first to it.second }.toSet()
                 val titlesToRequeue = skippedComparisons.flatMap { listOf(it.first, it.second) }.toSet()
-                val nextRound = nextRound(titlesToRequeue, pairsToExclude) ?: return state
+                val nextRound = nextRound(titlesToRequeue, pairsToExclude) ?: return State.Finished(
+                    ratings = state.ratings,
+                    forgotTitles = forgotTitle
+                )
                 round = nextRound
-                Round.State.Running(round.snapshot())
+                State.Running(round.snapshot())
             }
         }
     }
@@ -46,5 +49,10 @@ class Session(
         data class Rate(val preference: Preference, val strength: Comparison.Rating.Strength) : Action()
         data class Forget(val choice: Choice) : Action()
         object Skip : Action()
+    }
+
+    sealed class State {
+        data class Running(val snapshot: Round.Snapshot) : State()
+        data class Finished(val ratings: List<Comparison.Rating>, val forgotTitles: Set<Title>) : State()
     }
 }

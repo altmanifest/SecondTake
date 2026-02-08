@@ -7,7 +7,10 @@ import com.altmanifest.secondtake.domain.Session
 import com.altmanifest.secondtake.domain.Title
 import kotlin.time.Duration
 
-class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private val titleUpdater: TitleUpdater) {
+class CompareTitlesUseCase(
+    private val sessionFactory: SessionFactory,
+    private val titleUpdater: TitleUpdater,
+    private val forgottenTitleWriter: ForgottenTitleWriter) {
     private lateinit var session: Session
 
     fun start(): CreateResult =
@@ -21,9 +24,10 @@ class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private v
         }
 
     fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
-        is Round.State.Running -> State.Running(res.snapshot)
-        is Round.State.Finished -> {
+        is Session.State.Running -> State.Running(res.snapshot)
+        is Session.State.Finished -> {
             res.ratings.forEach(::applyRatingReduction)
+            forgottenTitleWriter.saveAll(res.forgotTitles)
             State.Finished
         }
     }
