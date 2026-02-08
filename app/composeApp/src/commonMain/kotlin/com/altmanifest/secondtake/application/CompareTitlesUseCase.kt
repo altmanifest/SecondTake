@@ -49,7 +49,7 @@ class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private v
     }
 
     sealed class CreateResult {
-        class Success(initialSnapshot: Round.Snapshot) : CreateResult()
+        data class Success(val initialSnapshot: Round.Snapshot) : CreateResult()
         object NoTitles : CreateResult()
         object NoComparisons : CreateResult()
     }
