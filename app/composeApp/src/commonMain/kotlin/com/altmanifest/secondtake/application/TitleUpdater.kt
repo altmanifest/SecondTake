@@ -2,7 +2,6 @@ package com.altmanifest.secondtake.application
 
 import com.altmanifest.secondtake.domain.Title
 
-interface TitleProvider {
-    fun getAll() : Set<Title>
+interface TitleUpdater {
     fun update(title: Title)
 }

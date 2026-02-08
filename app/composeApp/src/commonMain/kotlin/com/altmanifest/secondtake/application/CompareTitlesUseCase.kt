@@ -1,30 +1,28 @@
 package com.altmanifest.secondtake.application
 
 import com.altmanifest.secondtake.domain.Comparison
-import com.altmanifest.secondtake.domain.ComparisonSchedule
-import com.altmanifest.secondtake.domain.ComparisonSchedule.Companion.scheduleForComparison
-import com.altmanifest.secondtake.domain.Preference
 import com.altmanifest.secondtake.domain.Rating
-import com.altmanifest.secondtake.domain.Session
-import com.altmanifest.secondtake.domain.Session.Companion.createSession
+import com.altmanifest.secondtake.domain.Round
 import kotlin.time.Duration
 
-class CompareTitlesUseCase(private val titleProvider: TitleProvider, private val config: Config) {
-    fun startSession(): CreateResult =
-        when (val schedule = titleProvider.getAll().scheduleForComparison(config.comparisons)) {
-            is ComparisonSchedule.CreateResult.NoComparisons -> CreateResult.NoComparisons
-            is ComparisonSchedule.CreateResult.NoTitles -> CreateResult.NoTitles
-            is ComparisonSchedule.CreateResult.Success -> CreateResult.Success(
-                session = ActiveSessionHolder(
-                    result = schedule.value.createSession(config.capacity),
-                    onFinished = ::applyDecisions
-                )
-            )
+class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private val titleUpdater: TitleUpdater) {
+    private lateinit var sessionHandle: SessionHandle
+
+    fun start(): CreateResult =
+        when (val session = sessionFactory.create()) {
+            is SessionFactory.CreateResult.NoComparisons -> CreateResult.NoComparisons
+            is SessionFactory.CreateResult.NoTitles -> CreateResult.NoTitles
+            is SessionFactory.CreateResult.Success -> {
+                sessionHandle = session.handle
+                CreateResult.Success(session.handle.initialSnapshot)
+            }
         }
 
-    private fun applyDecisions(decisions: List<Session.Decision>) = decisions.forEach {
-        when (it) {
-            is Session.Decision.Rated -> applyRatingReduction(it.rating)
+    fun handle(action: SessionHandle.Action): State = when (val res = sessionHandle.handle(action)) {
+        is Round.State.Ongoing -> State.Running(res.snapshot)
+        is Round.State.Finished -> {
+            res.ratings.forEach(::applyRatingReduction)
+            State.Finished
         }
     }
 
@@ -36,40 +34,19 @@ class CompareTitlesUseCase(private val titleProvider: TitleProvider, private val
                 age = Duration.ZERO
             )
         )
-        titleProvider.update(updatedTitle)
-    }
-
-    class ActiveSessionHolder(result: Session.CreateResult, private val onFinished: (List<Session.Decision>) -> Unit) {
-        var snapshot: Session.Snapshot = result.first
-            private set
-
-        private val session = result.session
-
-        fun rateCurrent(preference: Preference, strength: Comparison.Rating.Strength): State =
-            when (val state = session.rateCurrent(preference, strength)) {
-                is Session.State.Ongoing -> {
-                    snapshot = state.snapshot
-                    State.Ongoing
-                }
-
-                is Session.State.Finished -> {
-                    onFinished(state.decision)
-                    State.Finished
-                }
-            }
-
-        sealed class State {
-            object Ongoing : State()
-            object Finished : State()
-        }
+        titleUpdater.update(updatedTitle)
     }
 
     sealed class CreateResult {
-        data class Success(val session: ActiveSessionHolder) : CreateResult()
+        class Success(initialSnapshot: Round.Snapshot) : CreateResult()
         object NoTitles : CreateResult()
         object NoComparisons : CreateResult()
     }
 
-    data class Config(val comparisons: Comparison.Config, val capacity: Session.Capacity)
+    sealed class State {
+        data class Running(val snapshot: Round.Snapshot) : State()
+        object Finished : State()
+    }
+
 }
 
