@@ -1,21 +1,24 @@
 package com.altmanifest.secondtake.service
 
 import com.altmanifest.secondtake.application.Session
+import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Round
 import com.altmanifest.secondtake.domain.Title
 
-class Session(initialRound: Round.CreateResult, private val nextRound: (Set<Title>) -> Round?) : Session {
+class Session(
+    initialRound: Round.CreateResult,
+    private val nextRound: (titles: Set<Title>, exclude: Set<Pair<Title, Title>>) -> Round?
+) : Session {
 
     override val initialSnapshot = initialRound.initialSnapshot
     private var round = initialRound.round
-    private val skippedTitles = mutableSetOf<Title>()
+    private val skippedComparisons = mutableSetOf<Comparison.View>()
 
     override fun handle(action: Session.Action): Round.State {
         val state = when (action) {
             is Session.Action.Rate -> round.rateCurrent(action.preference, action.strength)
             is Session.Action.Skip -> {
-                val view = round.snapshot().comparison
-                skippedTitles += setOf(view.first, view.second)
+                skippedComparisons += round.snapshot().comparison
                 round.skipCurrent()
             }
         }
@@ -23,7 +26,9 @@ class Session(initialRound: Round.CreateResult, private val nextRound: (Set<Titl
         return when (state) {
             is Round.State.Running -> state
             is Round.State.Finished -> {
-                val nextRound = nextRound(skippedTitles) ?: return state
+                val pairsToExclude = skippedComparisons.map { it.first to it.second }.toSet()
+                val titlesToRequeue = skippedComparisons.flatMap { listOf(it.first, it.second) }.toSet()
+                val nextRound = nextRound(titlesToRequeue, pairsToExclude) ?: return state
                 round = nextRound
                 Round.State.Running(round.snapshot())
             }

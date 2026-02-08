@@ -20,8 +20,9 @@ class SessionFactory(
             )
         }
 
-    private fun createRoundOrNull(titles: Set<Title>): Round? = when (val result = roundFactory.create(titles)) {
-        is RoundFactory.CreateResult.Success -> result.roundResult.round
-        else -> null
-    }
+    private fun createRoundOrNull(titles: Set<Title>, exclude: Set<Pair<Title, Title>>): Round? =
+        when (val result = roundFactory.create(titles, exclude)) {
+            is RoundFactory.CreateResult.Success -> result.roundResult.round
+            else -> null
+        }
 }
