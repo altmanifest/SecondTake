@@ -49,7 +49,7 @@ class Comparison private constructor(private val first: Title, private val secon
         data class DifferentTitleTypes(val first: KClass<out Title>, val second: KClass<out Title>) : CreateResult()
         data class SameTitle(val title: Title) : CreateResult()
         data class DifferentGenre(val first: Genre, val second: Genre) : CreateResult()
-        data class PointDifferenceTooHigh(val expected: Int, val got: Int) : CreateResult()
+        data class PointDifferenceTooHigh(val expected: Double, val got: Double) : CreateResult()
         data class RatingTooRecent(val differences: Set<RatingAgeDifference>) : CreateResult()
 
         fun successOrNull(): Comparison? = if (this is Success) comparison else null
@@ -58,7 +58,7 @@ class Comparison private constructor(private val first: Title, private val secon
     data class RatingAgeDifference(val title: Title, val missingAge: Duration)
 
     data class Config(
-        val maxPointDifference: Int,
+        val maxPointDifference: Double,
         val minRatingAge: Duration
     )
 
