@@ -2,7 +2,7 @@ package com.altmanifest.secondtake.domain
 
 class Round private constructor(private val schedule: ComparisonSchedule) {
     private val ratings = mutableListOf<Comparison.Rating>()
-    var index = 0
+    private var index = 0
 
     fun rateCurrent(preference: Preference, ratingStrength: Comparison.Rating.Strength): State {
         if (index >= schedule.size) {
