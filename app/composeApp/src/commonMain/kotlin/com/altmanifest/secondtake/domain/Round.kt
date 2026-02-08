@@ -4,42 +4,31 @@ class Round private constructor(private val schedule: ComparisonSchedule) {
     private val ratings = mutableListOf<Comparison.Rating>()
     private var index = 0
 
-    fun rateCurrent(preference: Preference, ratingStrength: Comparison.Rating.Strength): State {
-        if (index >= schedule.size) {
-            return State.Finished(ratings.toList())
-        }
+    fun snapshot() = Snapshot(
+        comparison = schedule.comparisonAt(index).view(),
+        progress = Progress(
+            current = index + 1,
+            total = schedule.size
+        )
+    )
 
         val comparison = schedule.comparisonAt(position = index)
         ratings += comparison.rate(preference, ratingStrength)
         index++
 
-        return if (index < schedule.size) {
-            State.Ongoing(
-                Snapshot(
-                    comparison = schedule.comparisonAt(position = index).view(),
-                    progress = Progress(
-                        current = index + 1,
-                        total = schedule.size
-                    )
-                )
-            )
-        } else {
+        return if (index < schedule.size) State.Ongoing(snapshot()) else {
             State.Finished(ratings.toList())
         }
     }
 
     companion object {
-        fun ComparisonSchedule.createRound(capacity: Capacity) =
-            CreateResult(
-                initialSnapshot = Snapshot(
-                    comparison = this.comparisonAt(position = 0).view(),
-                    progress = Progress(
-                        current = 1,
-                        total = capacity.value
-                    )
-                ),
-                round = Round(schedule = this.takeFirst(capacity.value))
+        fun ComparisonSchedule.createRound(capacity: Capacity): CreateResult {
+            val round = Round(schedule = this.takeFirst(capacity.value))
+            return CreateResult(
+                initialSnapshot = round.snapshot(),
+                round = round
             )
+        }
     }
 
     sealed class State {
