@@ -6,19 +6,19 @@ import com.altmanifest.secondtake.domain.Round
 import kotlin.time.Duration
 
 class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private val titleUpdater: TitleUpdater) {
-    private lateinit var sessionHandle: SessionHandle
+    private lateinit var session: Session
 
     fun start(): CreateResult =
-        when (val session = sessionFactory.create()) {
+        when (val result = sessionFactory.create()) {
             is SessionFactory.CreateResult.NoComparisons -> CreateResult.NoComparisons
             is SessionFactory.CreateResult.NoTitles -> CreateResult.NoTitles
             is SessionFactory.CreateResult.Success -> {
-                sessionHandle = session.handle
-                CreateResult.Success(session.handle.initialSnapshot)
+                this.session = result.session
+                CreateResult.Success(result.session.initialSnapshot)
             }
         }
 
-    fun handle(action: SessionHandle.Action): State = when (val res = sessionHandle.handle(action)) {
+    fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
         is Round.State.Ongoing -> State.Running(res.snapshot)
         is Round.State.Finished -> {
             res.ratings.forEach(::applyRatingReduction)
