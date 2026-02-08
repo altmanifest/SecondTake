@@ -1,5 +1,6 @@
 package com.altmanifest.secondtake.application
 
+import com.altmanifest.secondtake.domain.Genre
 import com.altmanifest.secondtake.domain.Session
 
 interface SessionFactory {
@@ -13,6 +14,7 @@ interface SessionFactory {
 
     sealed class Setup {
         object Default : Setup()
+        data class ByGenre(val genre: Genre) : Setup()
     }
 }
 

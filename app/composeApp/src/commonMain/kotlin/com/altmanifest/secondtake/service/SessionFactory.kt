@@ -12,6 +12,7 @@ class SessionFactory(
 ) : SessionFactory {
     override fun create(setup: Setup): SessionFactory.CreateResult = when (setup) {
         is Setup.Default -> create { titleProvider.getAll() }
+        is Setup.ByGenre -> create { titleProvider.getByGenre(setup.genre) }
     }
 
     fun create(provideTitles: () -> Set<Title>): SessionFactory.CreateResult =
