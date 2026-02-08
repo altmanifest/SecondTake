@@ -3,6 +3,7 @@ package com.altmanifest.secondtake.application
 import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Rating
 import com.altmanifest.secondtake.domain.Round
+import com.altmanifest.secondtake.domain.Title
 import kotlin.time.Duration
 
 class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private val titleUpdater: TitleUpdater) {
@@ -27,10 +28,19 @@ class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private v
     }
 
     private fun applyRatingReduction(rating: Comparison.Rating) {
-        val loserRatingReduction = if (rating.winner.rating.value < rating.loser.rating.value) 2 else 1
-        val updatedTitle = rating.loser.copy(
+        val loserRatingReduction = if (rating.winner.rating.value < rating.loser.rating.value) -2 else -1
+        updateTitle(rating.loser, ratingIncrease = loserRatingReduction)
+        updateTitle(rating.winner, ratingIncrease = when (rating.strength) {
+            Comparison.Rating.Strength.LOW -> 0
+            Comparison.Rating.Strength.MEDIUM -> 1
+            Comparison.Rating.Strength.HIGH -> 2
+        })
+    }
+
+    private fun updateTitle(title: Title, ratingIncrease: Int) {
+        val updatedTitle = title.copy(
             rating = Rating(
-                value = rating.loser.rating.value - loserRatingReduction,
+                value = title.rating.value + ratingIncrease,
                 age = Duration.ZERO
             )
         )
