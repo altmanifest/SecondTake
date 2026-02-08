@@ -23,7 +23,7 @@ class Round private constructor(private val schedule: ComparisonSchedule) {
         action()
         index++
 
-        return if (index < schedule.size) State.Ongoing(snapshot()) else {
+        return if (index < schedule.size) State.Running(snapshot()) else {
             State.Finished(ratings.toList())
         }
     }
@@ -39,7 +39,7 @@ class Round private constructor(private val schedule: ComparisonSchedule) {
     }
 
     sealed class State {
-        data class Ongoing(val snapshot: Snapshot) : State()
+        data class Running(val snapshot: Snapshot) : State()
         data class Finished(val ratings: List<Comparison.Rating>) : State()
     }
 

@@ -19,7 +19,7 @@ class CompareTitlesUseCase(private val sessionFactory: SessionFactory, private v
         }
 
     fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
-        is Round.State.Ongoing -> State.Running(res.snapshot)
+        is Round.State.Running -> State.Running(res.snapshot)
         is Round.State.Finished -> {
             res.ratings.forEach(::applyRatingReduction)
             State.Finished

@@ -21,11 +21,11 @@ class Session(initialRound: Round.CreateResult, private val nextRound: (Set<Titl
         }
 
         return when (state) {
-            is Round.State.Ongoing -> state
+            is Round.State.Running -> state
             is Round.State.Finished -> {
                 val nextRound = nextRound(skippedTitles) ?: return state
                 round = nextRound
-                Round.State.Ongoing(round.snapshot())
+                Round.State.Running(round.snapshot())
             }
         }
     }
