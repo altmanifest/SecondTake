@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +17,7 @@ import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.FilmwebButton
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.IMDBButton
+import com.altmanifest.secondtake.ui.components.MockifyButton
 import com.altmanifest.secondtake.ui.components.OnlyFilmsButton
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
 
@@ -30,27 +33,35 @@ fun OnboardingScreen(
          * */
     }
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Header(heading = "Connect services")
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 44.dp)
         ) {
             IMDBButton(
-                enabled = true,
+                enabled = false,
                 onClick = { connectProvider() },
                 isLoading =false,
             )
             FilmwebButton(
-                enabled = true,
+                enabled = false,
                 onClick = { connectProvider() },
                 isLoading = false,
             )
             OnlyFilmsButton(
+                enabled = true,
+                onClick = { connectProvider() },
+                isLoading = false,
+            )
+            MockifyButton(
                 enabled = true,
                 onClick = { connectProvider() },
                 isLoading = false,

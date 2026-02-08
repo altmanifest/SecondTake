@@ -28,6 +28,19 @@ fun CustomHeading(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun ComparisonHeading(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        fontSize = 32.sp,
+        color = TextColor,
+        textAlign = TextAlign.Center,
+        fontFamily = LatoFontFamily(),
+        modifier = modifier
+            .fillMaxWidth(0.75f)
+    )
+}
+
+@Composable
 fun ClickableText(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Text(
         text = text,
