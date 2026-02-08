@@ -1,5 +1,7 @@
 package com.altmanifest.secondtake.application
 
+import com.altmanifest.secondtake.domain.Session
+
 interface SessionFactory {
     fun create(): CreateResult
 

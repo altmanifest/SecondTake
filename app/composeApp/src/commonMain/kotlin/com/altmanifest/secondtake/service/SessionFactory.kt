@@ -2,6 +2,7 @@ package com.altmanifest.secondtake.service
 
 import com.altmanifest.secondtake.application.SessionFactory
 import com.altmanifest.secondtake.domain.Round
+import com.altmanifest.secondtake.domain.Session
 import com.altmanifest.secondtake.domain.Title
 
 class SessionFactory(

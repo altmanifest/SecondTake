@@ -3,6 +3,7 @@ package com.altmanifest.secondtake.application
 import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Rating
 import com.altmanifest.secondtake.domain.Round
+import com.altmanifest.secondtake.domain.Session
 import com.altmanifest.secondtake.domain.Title
 import kotlin.time.Duration
 

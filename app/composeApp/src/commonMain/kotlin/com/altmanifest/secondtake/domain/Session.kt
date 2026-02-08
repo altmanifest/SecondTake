@@ -1,23 +1,18 @@
-package com.altmanifest.secondtake.service
-
-import com.altmanifest.secondtake.application.Session
-import com.altmanifest.secondtake.domain.Comparison
-import com.altmanifest.secondtake.domain.Round
-import com.altmanifest.secondtake.domain.Title
+package com.altmanifest.secondtake.domain
 
 class Session(
     initialRound: Round.CreateResult,
     private val nextRound: (titles: Set<Title>, exclude: Set<Pair<Title, Title>>) -> Round?
-) : Session {
+) {
 
-    override val initialSnapshot = initialRound.initialSnapshot
+    val initialSnapshot = initialRound.initialSnapshot
     private var round = initialRound.round
     private val skippedComparisons = mutableSetOf<Comparison.View>()
 
-    override fun handle(action: Session.Action): Round.State {
+    fun handle(action: Action): Round.State {
         val state = when (action) {
-            is Session.Action.Rate -> round.rateCurrent(action.preference, action.strength)
-            is Session.Action.Skip -> {
+            is Action.Rate -> round.rateCurrent(action.preference, action.strength)
+            is Action.Skip -> {
                 skippedComparisons += round.snapshot().comparison
                 round.skipCurrent()
             }
@@ -34,5 +29,9 @@ class Session(
             }
         }
     }
-}
 
+    sealed class Action {
+        data class Rate(val preference: Preference, val strength: Comparison.Rating.Strength) : Action()
+        object Skip : Action()
+    }
+}
