@@ -1,20 +1,27 @@
 package com.altmanifest.secondtake.service
 
 import com.altmanifest.secondtake.application.SessionFactory
-import com.altmanifest.secondtake.domain.Comparison
-import com.altmanifest.secondtake.domain.ComparisonSchedule
-import com.altmanifest.secondtake.domain.ComparisonSchedule.Companion.scheduleForComparison
 import com.altmanifest.secondtake.domain.Round
+import com.altmanifest.secondtake.domain.Title
 
-class SessionFactory(private val titleProvider: TitleProvider, private val config: Config) : SessionFactory {
+class SessionFactory(
+    private val titleProvider: TitleProvider,
+    private val roundFactory: RoundFactory
+) : SessionFactory {
     override fun create(): SessionFactory.CreateResult =
-        when (val schedule = titleProvider.getAll().scheduleForComparison(config.comparisons)) {
-            is ComparisonSchedule.CreateResult.NoComparisons -> SessionFactory.CreateResult.NoComparisons
-            is ComparisonSchedule.CreateResult.NoTitles -> SessionFactory.CreateResult.NoTitles
-            is ComparisonSchedule.CreateResult.Success -> SessionFactory.CreateResult.Success(
-                Session(schedule.value, config.capacity)
+        when (val roundResult = roundFactory.create(titleProvider.getAll())) {
+            is RoundFactory.CreateResult.NoComparisons -> SessionFactory.CreateResult.NoComparisons
+            is RoundFactory.CreateResult.NoTitles -> SessionFactory.CreateResult.NoTitles
+            is RoundFactory.CreateResult.Success -> SessionFactory.CreateResult.Success(
+                Session(
+                    initialRound = roundResult.roundResult,
+                    nextRound = ::createRoundOrNull
+                )
             )
         }
 
-    data class Config(val comparisons: Comparison.Config, val capacity: Round.Capacity)
+    private fun createRoundOrNull(titles: Set<Title>): Round? = when (val result = roundFactory.create(titles)) {
+        is RoundFactory.CreateResult.Success -> result.roundResult.round
+        else -> null
+    }
 }

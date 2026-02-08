@@ -12,21 +12,37 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
     }
 
     companion object {
-        fun Set<Title>.scheduleForComparison(config: Comparison.Config): CreateResult {
-            if(this.size < 2) {
+        fun Set<Title>.scheduleForComparison(config: Comparison.Config, exclude: Set<Pair<Title, Title>> = setOf()): CreateResult {
+            if (this.size < 2) {
                 return CreateResult.NoTitles
             }
 
-            val comparisons = this.groupBy { it.genre }.values
+            val titles = this.groupBy { it.genre }.values
                 .flatMap { it.sortedBy { title -> title.rating.value } }
-                .zipWithNext()
-                .mapNotNull { it.toComparison(config).successOrNull() }
+
+            val comparisons = mutableListOf<Comparison>()
+
+            for (i in 0 until titles.size - 1) {
+                for (j in i + 1 until titles.size) {
+                    val pair = titles[i] to titles[j]
+                    if (exclude.containsPair(pair)) {
+                        continue
+                    }
+                    pair.toComparison(config).successOrNull()?.let {
+                        comparisons += it
+                        break
+                    }
+                }
+            }
 
             return when {
                 comparisons.isEmpty() -> CreateResult.NoComparisons
                 else -> CreateResult.Success(ComparisonSchedule(comparisons))
             }
         }
+
+        private fun Iterable<Pair<Title, Title>>.containsPair(pair: Pair<Title, Title>): Boolean =
+            (pair.first to pair.second) in this || (pair.second to pair.first) in this
     }
 
     sealed class CreateResult {
