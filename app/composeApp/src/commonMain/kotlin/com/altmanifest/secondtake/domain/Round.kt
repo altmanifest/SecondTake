@@ -12,8 +12,15 @@ class Round private constructor(private val schedule: ComparisonSchedule) {
         )
     )
 
+    fun rateCurrent(preference: Preference, ratingStrength: Comparison.Rating.Strength): State = advance {
         val comparison = schedule.comparisonAt(position = index)
         ratings += comparison.rate(preference, ratingStrength)
+    }
+
+    fun skipCurrent(): State = advance { }
+
+    private fun advance(action: () -> Unit): State {
+        action()
         index++
 
         return if (index < schedule.size) State.Ongoing(snapshot()) else {
