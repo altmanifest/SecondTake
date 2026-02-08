@@ -4,7 +4,7 @@ import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Preference
 import com.altmanifest.secondtake.domain.Round
 
-interface SessionHandle {
+interface Session {
     val initialSnapshot: Round.Snapshot
     fun handle(action: Action): Round.State
 

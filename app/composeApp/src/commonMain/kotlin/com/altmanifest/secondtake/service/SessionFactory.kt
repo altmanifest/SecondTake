@@ -12,7 +12,7 @@ class SessionFactory(private val titleProvider: TitleProvider, private val confi
             is ComparisonSchedule.CreateResult.NoComparisons -> SessionFactory.CreateResult.NoComparisons
             is ComparisonSchedule.CreateResult.NoTitles -> SessionFactory.CreateResult.NoTitles
             is ComparisonSchedule.CreateResult.Success -> SessionFactory.CreateResult.Success(
-                SessionHandle(schedule.value, config.capacity)
+                Session(schedule.value, config.capacity)
             )
         }
 
