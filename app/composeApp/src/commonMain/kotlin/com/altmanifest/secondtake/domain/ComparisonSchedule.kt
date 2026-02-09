@@ -21,21 +21,34 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
                 .flatMap { it.sortedBy { title -> title.rating.value } }
 
             val comparisons = mutableListOf<Comparison>()
+            val usedIndices = mutableSetOf<Int>() // Merkt sich, welche Titel schon verplant sind
 
-            for (i in 0 until titles.size - 1) {
+            // 2. Iteriere durch alle Titel
+            for (i in titles.indices) {
+                if (i in usedIndices) continue // Titel i ist schon in einem Vergleich -> überspringen
+
+                // Suche einen Partner j für i
                 for (j in i + 1 until titles.size) {
+                    if (j in usedIndices) continue // Titel j ist schon vergeben -> überspringen
+
                     val pair = titles[i] to titles[j]
-                    if (exclude.containsPair(pair)) {
-                        continue
+
+                    // Prüfen, ob das Paar ausgeschlossen ist (z.B. weil es übersprungen wurde)
+                    if (exclude.containsPair(pair)) continue
+
+                    // Versuch, den Vergleich zu erstellen (prüft Rating-Differenz etc.)
+                    pair.toComparison(config).successOrNull()?.let { validComparison ->
+                        comparisons += validComparison
+
+                        // Beide Titel als "benutzt" markieren
+                        usedIndices.add(i)
+                        usedIndices.add(j)
                     }
-                    pair.toComparison(config).successOrNull()?.let {
-                        comparisons += it
-                        break
-                    }
+
+                    // Wenn wir einen Partner für i gefunden haben, brechen wir die innere Suche ab
+                    if (i in usedIndices) break
                 }
             }
-
-            println(comparisons)
 
             return when {
                 comparisons.isEmpty() -> CreateResult.NoComparisons
