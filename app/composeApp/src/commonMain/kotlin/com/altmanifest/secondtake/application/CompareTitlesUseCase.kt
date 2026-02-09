@@ -6,22 +6,19 @@ import com.altmanifest.secondtake.domain.Rating
 import com.altmanifest.secondtake.domain.Round
 import com.altmanifest.secondtake.domain.Session
 import com.altmanifest.secondtake.domain.Title
-import com.altmanifest.secondtake.service.TitleProvider
 import kotlin.time.Duration
 
 class CompareTitlesUseCase(
     private val sessionFactory: SessionFactory,
-    private val titleProvider: TitleProvider,
-    private val titleUpdater: TitleUpdater,
-    private val forgottenTitlesProvider: ForgottenTitlesProvider,
-    private val forgottenTitleWriter: ForgottenTitleWriter
+    private val titleOwner: TitleOwner,
+    private val forgottenTitleSource: ForgottenTitleSource
 ) {
     private lateinit var session: Session
 
     fun start(setup: Setup = Setup.Default): CreateResult {
         val titles = when (setup) {
-            is Setup.Default -> titleProvider.getAll()
-            is Setup.ByGenre -> titleProvider.getByGenre(setup.genre)
+            is Setup.Default -> titleOwner.getAll()
+            is Setup.ByGenre -> titleOwner.getByGenre(setup.genre)
         }
 
         titles.deleteOutdatedForgottenTitles()
@@ -37,13 +34,13 @@ class CompareTitlesUseCase(
         }
     }
 
-    private fun Set<Title>.filterOutForgotten() = this.filter { forgottenTitlesProvider.get(it.id) == null }
+    private fun Set<Title>.filterOutForgotten() = this.filter { forgottenTitleSource.get(it.id) == null }
 
     fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
         is Session.State.Running -> State.Running(res.snapshot)
         is Session.State.Finished -> {
             res.ratings.forEach(::applyRatingReduction)
-            forgottenTitleWriter.saveAll(res.forgotTitles)
+            forgottenTitleSource.saveAll(res.forgotTitles)
             State.Finished
         }
     }
@@ -59,9 +56,9 @@ class CompareTitlesUseCase(
     }
 
     private fun Set<Title>.deleteOutdatedForgottenTitles() = this.forEach { title ->
-        val forgottenTitle = forgottenTitlesProvider.get(title.id) ?: return@forEach
+        val forgottenTitle = forgottenTitleSource.get(title.id) ?: return@forEach
         if (forgottenTitle.rating.age > title.rating.age) {
-            forgottenTitleWriter.delete(title)
+            forgottenTitleSource.delete(title)
         }
     }
 
@@ -72,7 +69,7 @@ class CompareTitlesUseCase(
                 age = Duration.ZERO
             )
         )
-        titleUpdater.update(updatedTitle)
+        titleOwner.update(updatedTitle)
     }
 
     sealed class Setup {
