@@ -30,6 +30,7 @@ class Session(
                     forgotTitles = forgotTitle
                 )
                 round = nextRound
+                skippedComparisons.clear()
                 State.Running(round.snapshot())
             }
         }

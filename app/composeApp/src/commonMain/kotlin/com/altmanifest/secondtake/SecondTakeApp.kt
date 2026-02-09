@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,10 +16,10 @@ import androidx.navigation.compose.rememberNavController
 import com.altmanifest.secondtake.application.CompareTitlesUseCase
 import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Round
-import com.altmanifest.secondtake.mock.MockTitleUpdater
+import com.altmanifest.secondtake.mock.MockForgottenTitleSource
+import com.altmanifest.secondtake.mock.MockTitleOwner
 import com.altmanifest.secondtake.service.RoundFactory
 import com.altmanifest.secondtake.service.SessionFactory
-import com.altmanifest.secondtake.service.TitleProvider
 import com.altmanifest.secondtake.ui.screens.ComparisonScreen
 import com.altmanifest.secondtake.ui.screens.OnboardingScreen
 import com.altmanifest.secondtake.ui.screens.ProviderSelectionScreen
@@ -83,10 +83,9 @@ fun SecondTakeApp(
             ComparisonScreen(
                 onHomeButtonClicked = { navController.navigate(route = SecondTakeRoutes.Start.name) },
                 onBackButtonClicked = { navController.popBackStack() },
-                viewModel = ComparisonViewModel(
+                viewModel = remember {ComparisonViewModel(
                     useCase = CompareTitlesUseCase(
                         sessionFactory = SessionFactory(
-                            titleProvider = TitleProvider(),
                             roundFactory = RoundFactory(
                                 comparisonConfig = Comparison.Config(
                                     maxPointDifference = 1.0,
@@ -95,8 +94,9 @@ fun SecondTakeApp(
                                 capacity = Round.Capacity(10)
                             )
                         ),
-                        titleUpdater = MockTitleUpdater()
-                    )),
+                        forgottenTitleSource = MockForgottenTitleSource(),
+                        titleOwner = MockTitleOwner()
+                    ))},
                 modifier = modifier
             )
         }
