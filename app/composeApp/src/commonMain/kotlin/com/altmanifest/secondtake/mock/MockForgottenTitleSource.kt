@@ -4,16 +4,21 @@ import com.altmanifest.secondtake.application.ForgottenTitleSource
 import com.altmanifest.secondtake.domain.Title
 
 class MockForgottenTitleSource: ForgottenTitleSource {
+    private val forgottenTitles = MockTitleOwner.mockActionMovies.take(6).toMutableList()
+
     override fun get(id: Title.Id): Title? {
-        return null
+        return forgottenTitles.find { it.id == id }
     }
 
     override fun saveAll(titles: Set<Title>) {
-        // Simulates saving the forgotten titles
-        println("Simuliere Speichern der vergessenen Titel: ${titles.joinToString { it.value }}")
+        titles.forEach { title ->
+            if (forgottenTitles.none { it.id == title.id }) {
+                forgottenTitles.add(title)
+            }
+        }
     }
 
     override fun delete(title: Title) {
-        println("Simuliere löschen des vergessenen Titels: ${title}")
+        forgottenTitles.removeAll { it.id == title.id }
     }
 }

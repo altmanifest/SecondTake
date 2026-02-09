@@ -21,10 +21,12 @@ import com.altmanifest.secondtake.mock.MockTitleOwner
 import com.altmanifest.secondtake.service.RoundFactory
 import com.altmanifest.secondtake.service.SessionFactory
 import com.altmanifest.secondtake.ui.screens.ComparisonScreen
+import com.altmanifest.secondtake.ui.screens.ForgottenTitlesScreen
 import com.altmanifest.secondtake.ui.screens.OnboardingScreen
 import com.altmanifest.secondtake.ui.screens.ProviderSelectionScreen
 import com.altmanifest.secondtake.ui.screens.StartScreen
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
+import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
 import kotlin.time.Duration
 
 enum class SecondTakeRoutes {
@@ -97,6 +99,17 @@ fun SecondTakeApp(
                         forgottenTitleSource = MockForgottenTitleSource(),
                         titleOwner = MockTitleOwner()
                     ))},
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.ForgottenTitles.name) {
+            ForgottenTitlesScreen(
+                onBackClick = { navController.popBackStack() },
+                viewModel = remember {
+                    ForgottenTitlesViewModel(
+                        titleOwner = MockTitleOwner(),
+                        forgottenTitleSource = MockForgottenTitleSource(),
+                    )},
                 modifier = modifier
             )
         }
