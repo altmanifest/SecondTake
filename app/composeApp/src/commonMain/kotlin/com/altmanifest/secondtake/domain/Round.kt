@@ -4,13 +4,13 @@ class Round private constructor(private val schedule: ComparisonSchedule) {
     private val ratings = mutableListOf<Comparison.Rating>()
     private var index = 0
 
-    fun snapshot() : Snapshot  {var snapshot = Snapshot(
+    fun snapshot() : Snapshot = Snapshot(
         comparison = schedule.comparisonAt(index).view(),
         progress = Progress(
             current = index + 1,
             total = schedule.size
         )
-    ); println(snapshot); return snapshot }
+    )
 
     fun rateCurrent(preference: Preference, ratingStrength: Comparison.Rating.Strength): State = advance {
         val comparison = schedule.comparisonAt(position = index)
