@@ -14,16 +14,20 @@ class CompareTitlesUseCase(
     private val titleProvider: TitleProvider,
     private val titleUpdater: TitleUpdater,
     private val forgottenTitlesProvider: ForgottenTitlesProvider,
-    private val forgottenTitleWriter: ForgottenTitleWriter) {
+    private val forgottenTitleWriter: ForgottenTitleWriter
+) {
     private lateinit var session: Session
 
     fun start(setup: Setup = Setup.Default): CreateResult {
         val titles = when (setup) {
             is Setup.Default -> titleProvider.getAll()
             is Setup.ByGenre -> titleProvider.getByGenre(setup.genre)
-        }.filter { !forgottenTitlesProvider.isForgotten(title = it) }.toSet()
+        }
 
-        return when (val result = sessionFactory.create(titles)) {
+        titles.deleteOutdatedForgottenTitles()
+
+        val ratedTitles = titles.filterOutForgotten().toSet()
+        return when (val result = sessionFactory.create(ratedTitles)) {
             is SessionFactory.CreateResult.NoComparisons -> CreateResult.NoComparisons
             is SessionFactory.CreateResult.NoTitles -> CreateResult.NoTitles
             is SessionFactory.CreateResult.Success -> {
@@ -32,6 +36,8 @@ class CompareTitlesUseCase(
             }
         }
     }
+
+    private fun Set<Title>.filterOutForgotten() = this.filter { forgottenTitlesProvider.get(it.id) == null }
 
     fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
         is Session.State.Running -> State.Running(res.snapshot)
@@ -50,6 +56,13 @@ class CompareTitlesUseCase(
             Comparison.Rating.Strength.MEDIUM -> 1
             Comparison.Rating.Strength.HIGH -> 2
         })
+    }
+
+    private fun Set<Title>.deleteOutdatedForgottenTitles() = this.forEach { title ->
+        val forgottenTitle = forgottenTitlesProvider.get(title.id) ?: return@forEach
+        if (forgottenTitle.rating.age > title.rating.age) {
+            forgottenTitleWriter.delete(title)
+        }
     }
 
     private fun updateTitle(title: Title, ratingIncrease: Int) {
@@ -77,6 +90,5 @@ class CompareTitlesUseCase(
         data class Running(val snapshot: Round.Snapshot) : State()
         object Finished : State()
     }
-
 }
 

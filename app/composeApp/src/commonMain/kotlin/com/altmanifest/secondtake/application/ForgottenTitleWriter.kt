@@ -4,4 +4,5 @@ import com.altmanifest.secondtake.domain.Title
 
 interface ForgottenTitleWriter {
     fun saveAll(titles: Set<Title>)
+    fun delete(title: Title)
 }
