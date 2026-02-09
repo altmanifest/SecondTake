@@ -26,12 +26,6 @@ fun OnboardingScreen(
     onContinueButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    fun connectProvider() {
-        /**
-         * @TODO
-         * Implement Provider connection
-         * */
-    }
     Column(
         modifier = modifier.padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,22 +42,22 @@ fun OnboardingScreen(
         ) {
             IMDBButton(
                 enabled = false,
-                onClick = { connectProvider() },
+                onClick = { },
                 isLoading =false,
             )
             FilmwebButton(
                 enabled = false,
-                onClick = { connectProvider() },
+                onClick = {  },
                 isLoading = false,
             )
             OnlyFilmsButton(
                 enabled = true,
-                onClick = { connectProvider() },
+                onClick = {  },
                 isLoading = false,
             )
             MockifyButton(
                 enabled = true,
-                onClick = { connectProvider() },
+                onClick = {  },
                 isLoading = false,
             )
         }
@@ -77,7 +71,7 @@ fun OnboardingScreen(
         ) {
             PrimaryButton(
                 text = "Continue",
-                enabled = true, /** @TODO : Make enabled only true if at least 1 provider is connected */
+                enabled = true,
                 onClick = onContinueButtonClicked,
                 isLoading = false,
             )
