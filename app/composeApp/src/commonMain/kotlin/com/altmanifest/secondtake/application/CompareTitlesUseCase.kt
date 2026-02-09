@@ -13,8 +13,8 @@ class CompareTitlesUseCase(
     private val forgottenTitleWriter: ForgottenTitleWriter) {
     private lateinit var session: Session
 
-    fun start(): CreateResult =
-        when (val result = sessionFactory.create()) {
+    fun start(setup: SessionFactory.Setup = SessionFactory.Setup.Default): CreateResult =
+        when (val result = sessionFactory.create(setup)) {
             is SessionFactory.CreateResult.NoComparisons -> CreateResult.NoComparisons
             is SessionFactory.CreateResult.NoTitles -> CreateResult.NoTitles
             is SessionFactory.CreateResult.Success -> {
