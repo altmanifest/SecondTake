@@ -12,43 +12,15 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
     }
 
     companion object {
-        fun Set<Title>.scheduleForComparison(config: Comparison.Config, exclude: Set<Pair<Title, Title>> = setOf()): CreateResult {
+        fun Set<Title>.scheduleForComparison(config: Comparison.Config, pairingPolicy: (Pair<Title, Title>) -> Boolean = { true }): CreateResult {
             if (this.size < 2) {
                 return CreateResult.NoTitles
             }
 
-            val titles = this.groupBy { it.genre }.values
+            val comparisons = this.groupBy { it.genre }.values
                 .flatMap { it.sortedBy { title -> title.rating.value } }
-
-            val comparisons = mutableListOf<Comparison>()
-            val usedIndices = mutableSetOf<Int>() // Merkt sich, welche Titel schon verplant sind
-
-            // 2. Iteriere durch alle Titel
-            for (i in titles.indices) {
-                if (i in usedIndices) continue // Titel i ist schon in einem Vergleich -> überspringen
-
-                // Suche einen Partner j für i
-                for (j in i + 1 until titles.size) {
-                    if (j in usedIndices) continue // Titel j ist schon vergeben -> überspringen
-
-                    val pair = titles[i] to titles[j]
-
-                    // Prüfen, ob das Paar ausgeschlossen ist (z.B. weil es übersprungen wurde)
-                    if (exclude.containsPair(pair)) continue
-
-                    // Versuch, den Vergleich zu erstellen (prüft Rating-Differenz etc.)
-                    pair.toComparison(config).successOrNull()?.let { validComparison ->
-                        comparisons += validComparison
-
-                        // Beide Titel als "benutzt" markieren
-                        usedIndices.add(i)
-                        usedIndices.add(j)
-                    }
-
-                    // Wenn wir einen Partner für i gefunden haben, brechen wir die innere Suche ab
-                    if (i in usedIndices) break
-                }
-            }
+                .createPairs(pairingPolicy)
+                .mapNotNull { it.toComparison(config).successOrNull() }
 
             return when {
                 comparisons.isEmpty() -> CreateResult.NoComparisons
@@ -56,8 +28,11 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
             }
         }
 
-        private fun Iterable<Pair<Title, Title>>.containsPair(pair: Pair<Title, Title>): Boolean =
-            (pair.first to pair.second) in this || (pair.second to pair.first) in this
+        private fun List<Title>.createPairs(pairingPolicy: (Pair<Title, Title>) -> Boolean): List<Pair<Title, Title>> =
+            this.windowed(size = 2, step = 2, partialWindows = false) {
+                val pair = it[0] to it[1]
+                if (pairingPolicy(pair)) pair else null
+            }.filterNotNull()
     }
 
     sealed class CreateResult {
