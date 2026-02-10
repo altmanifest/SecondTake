@@ -8,8 +8,9 @@ import com.altmanifest.secondtake.domain.Round.Companion.createRound
 import com.altmanifest.secondtake.domain.Title
 
 class RoundFactory(private val comparisonConfig: Comparison.Config, private val capacity: Round.Capacity) {
-    fun create(titles: Set<Title>, exclude: Set<Pair<Title, Title>> = setOf()): CreateResult =
-        when (val schedule = titles.scheduleForComparison(comparisonConfig, exclude)) {
+
+    fun create(titles: Set<Title>, pairingPolicy: (Pair<Title, Title>) -> Boolean = { true }): CreateResult =
+        when (val schedule = titles.scheduleForComparison(comparisonConfig, pairingPolicy)) {
             is ComparisonSchedule.CreateResult.NoTitles -> CreateResult.NoTitles
             is ComparisonSchedule.CreateResult.NoComparisons ->
                 CreateResult.NoComparisons

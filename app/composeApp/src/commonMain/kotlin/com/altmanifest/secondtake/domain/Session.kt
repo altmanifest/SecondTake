@@ -2,12 +2,12 @@ package com.altmanifest.secondtake.domain
 
 class Session(
     initialRound: Round.CreateResult,
-    private val nextRound: (titles: Set<Title>, exclude: Set<Pair<Title, Title>>) -> Round?
+    private val nextRound: (titles: Set<Title>, pairingPolicy: (Pair<Title, Title>) -> Boolean) -> Round?
 ) {
 
     val initialSnapshot = initialRound.initialSnapshot
     private var round = initialRound.round
-    private val skippedComparisons = mutableSetOf<Comparison.View>()
+    private val skippedPairs = mutableSetOf<Pair<Title, Title>>()
     private val forgotTitle = mutableSetOf<Title>()
 
     fun handle(action: Action): State {
@@ -15,7 +15,8 @@ class Session(
             is Action.Rate -> round.rateCurrent(action.preference, action.strength)
             is Action.Forget -> forget(action.choice)
             is Action.Skip -> {
-                skippedComparisons += round.snapshot().comparison
+                val comparison = round.snapshot().comparison;
+                skippedPairs += comparison.first to comparison.second
                 round.skipCurrent()
             }
         }
@@ -23,14 +24,13 @@ class Session(
         return when (state) {
             is Round.State.Running -> State.Running(state.snapshot)
             is Round.State.Finished -> {
-                val pairsToExclude = skippedComparisons.map { it.first to it.second }.toSet()
-                val titlesToRequeue = skippedComparisons.flatMap { listOf(it.first, it.second) }.toSet()
-                val nextRound = nextRound(titlesToRequeue, pairsToExclude) ?: return State.Finished(
+                val titlesToRequeue = skippedPairs.flatMap { listOf(it.first, it.second) }.toSet()
+                val nextRound = nextRound(titlesToRequeue) { !skippedPairs.containsPair(it) } ?: return State.Finished(
                     ratings = state.ratings,
                     forgotTitles = forgotTitle
                 )
                 round = nextRound
-                skippedComparisons.clear()
+                skippedPairs.clear()
                 State.Running(round.snapshot())
             }
         }
@@ -45,6 +45,9 @@ class Session(
         }
         return round.skipCurrent()
     }
+
+    private fun Iterable<Pair<Title, Title>>.containsPair(pair: Pair<Title, Title>): Boolean =
+        (pair.first to pair.second) in this || (pair.second to pair.first) in this
 
     sealed class Action {
         data class Rate(val preference: Preference, val strength: Comparison.Rating.Strength) : Action()
