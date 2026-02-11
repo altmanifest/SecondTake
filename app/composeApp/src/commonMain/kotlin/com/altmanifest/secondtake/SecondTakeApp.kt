@@ -21,10 +21,16 @@ import com.altmanifest.secondtake.mock.MockTitleOwner
 import com.altmanifest.secondtake.service.RoundFactory
 import com.altmanifest.secondtake.service.SessionFactory
 import com.altmanifest.secondtake.ui.screens.ComparisonScreen
+import com.altmanifest.secondtake.ui.screens.ContentTypeMovieShowScreen
+import com.altmanifest.secondtake.ui.screens.ContentTypeShowEpisodeScreen
 import com.altmanifest.secondtake.ui.screens.ForgottenTitlesScreen
+import com.altmanifest.secondtake.ui.screens.GenreScreen
 import com.altmanifest.secondtake.ui.screens.OnboardingScreen
 import com.altmanifest.secondtake.ui.screens.ProviderSelectionScreen
+import com.altmanifest.secondtake.ui.screens.SelectSeasonScreen
+import com.altmanifest.secondtake.ui.screens.SelectShowScreen
 import com.altmanifest.secondtake.ui.screens.StartScreen
+import com.altmanifest.secondtake.ui.viewmodel.ComparisonSetupViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
 import kotlin.time.Duration
@@ -34,7 +40,12 @@ enum class SecondTakeRoutes {
     Start,
     ProviderSelection,
     ForgottenTitles,
-    Comparison
+    Comparison,
+    ContentTypeMovieShow,
+    ContentTypeShowEpisode,
+    Genre,
+    SelectShow,
+    SelectSeason,
 }
 
 @Composable
@@ -45,6 +56,8 @@ fun SecondTakeApp(
         .background(MaterialTheme.colorScheme.background)
         .safeContentPadding()
         .fillMaxSize()
+
+    val comparisonSetupViewModel = remember { ComparisonSetupViewModel() }
 
     NavHost(
         navController = navController,
@@ -76,7 +89,49 @@ fun SecondTakeApp(
         }
         composable(route = SecondTakeRoutes.ProviderSelection.name) {
             ProviderSelectionScreen(
-                onProviderButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
+                onProviderButtonClicked = { navController.navigate(route = SecondTakeRoutes.ContentTypeMovieShow.name) },
+                onBackButtonClicked = { navController.popBackStack() },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.ContentTypeMovieShow.name) {
+            ContentTypeMovieShowScreen(
+                viewModel = comparisonSetupViewModel,
+                onMovieButtonClicked = { navController.navigate(route = SecondTakeRoutes.Genre.name) },
+                onShowButtonClicked = { navController.navigate(route = SecondTakeRoutes.ContentTypeShowEpisode.name) },
+                onBackButtonClicked = { navController.popBackStack() },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.ContentTypeShowEpisode.name) {
+            ContentTypeShowEpisodeScreen(
+                viewModel = comparisonSetupViewModel,
+                onEpisodeButtonClicked = { navController.navigate(route = SecondTakeRoutes.SelectShow.name) },
+                onShowButtonClicked = { navController.navigate(route = SecondTakeRoutes.Genre.name) },
+                onBackButtonClicked = { navController.popBackStack() },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.Genre.name) {
+            GenreScreen(
+                viewModel = comparisonSetupViewModel,
+                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
+                onBackButtonClicked = { navController.popBackStack() },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.SelectShow.name) {
+            SelectShowScreen(
+                viewModel = comparisonSetupViewModel,
+                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.SelectSeason.name) },
+                onBackButtonClicked = { navController.popBackStack() },
+                modifier = modifier
+            )
+        }
+        composable(route = SecondTakeRoutes.SelectSeason.name) {
+            SelectSeasonScreen(
+                viewModel = comparisonSetupViewModel,
+                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )

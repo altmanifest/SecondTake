@@ -23,7 +23,7 @@ fun ProviderSelectionScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(top = 40.dp),
+        modifier = modifier.padding(top = 80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Header(heading = "Choose your provider", onBackClick = onBackButtonClicked)
