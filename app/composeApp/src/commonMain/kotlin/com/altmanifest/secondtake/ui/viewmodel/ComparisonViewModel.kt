@@ -25,7 +25,7 @@ class ComparisonViewModel(
     var uiState by mutableStateOf(ComparisonUIState())
         private set
 
-    fun startViewModel(){
+    suspend fun startViewModel(){
         val result = useCase.start()
         when (result) {
             CompareTitlesUseCase.CreateResult.NoComparisons -> println("NO Comparisons")
@@ -41,7 +41,7 @@ class ComparisonViewModel(
         }
     }
 
-    fun onRate(preference: Preference, ratingStrength: Comparison.Rating.Strength) {
+    suspend fun onRate(preference: Preference, ratingStrength: Comparison.Rating.Strength) {
         val action = Session.Action.Rate(preference, ratingStrength)
         val result = useCase.handle(action)
 
@@ -62,12 +62,12 @@ class ComparisonViewModel(
         }
     }
 
-    fun onSkip() {
+    suspend fun onSkip() {
         val result = useCase.handle(Session.Action.Skip)
         updateState(result)
     }
 
-    fun onForget(choice: Choice) {
+    suspend fun onForget(choice: Choice) {
         val result = useCase.handle(Session.Action.Forget(choice))
         updateState(result)
     }
