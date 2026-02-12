@@ -56,8 +56,8 @@ fun ForgottenTitlesScreen(
                     ForgottenTitleCard(
                         title = title.value,
                         imageURI = title.posterUrl,
-                        onDeleteClick = { viewModel.onDelete(title) },
-                        onWatchlistClick = { scope.launch { viewModel.onRestore(title)  } },
+                        onDeleteClick = { scope.launch { viewModel.onDelete(title) }  },
+                        onWatchlistClick = { viewModel.onRestore() },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
