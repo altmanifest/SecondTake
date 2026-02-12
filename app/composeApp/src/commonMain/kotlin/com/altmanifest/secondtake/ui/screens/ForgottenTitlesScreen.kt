@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.altmanifest.secondtake.ui.components.ForgottenTitleCard
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ForgottenTitlesScreen(
@@ -27,6 +29,8 @@ fun ForgottenTitlesScreen(
     LaunchedEffect(Unit){
         viewModel.startViewModel()
     }
+
+    val scope = rememberCoroutineScope()
 
     val state = viewModel.uiState
 
@@ -53,7 +57,7 @@ fun ForgottenTitlesScreen(
                         title = title.value,
                         imageURI = title.posterUrl,
                         onDeleteClick = { viewModel.onDelete(title) },
-                        onWatchlistClick = { viewModel.onRestore(title) },
+                        onWatchlistClick = { scope.launch { viewModel.onRestore(title)  } },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

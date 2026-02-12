@@ -15,7 +15,7 @@ class CompareTitlesUseCase(
 ) {
     private lateinit var session: Session
 
-    fun start(setup: Setup = Setup.Default): CreateResult {
+    suspend fun start(setup: Setup = Setup.Default): CreateResult {
         val titles = when (setup) {
             is Setup.Default -> titleOwner.getAll()
             is Setup.ByGenre -> titleOwner.getByGenre(setup.genre)
@@ -34,9 +34,9 @@ class CompareTitlesUseCase(
         }
     }
 
-    private fun Set<Title>.filterOutForgotten() = this.filter { forgottenTitleSource.get(it.id) == null }
+    private suspend fun Set<Title>.filterOutForgotten() = this.filter { forgottenTitleSource.get(it.id) == null }
 
-    fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
+    suspend fun handle(action: Session.Action): State = when (val res = session.handle(action)) {
         is Session.State.Running -> State.Running(res.snapshot)
         is Session.State.Finished -> {
             res.ratings.forEach(::applyRatingReduction)
@@ -55,7 +55,7 @@ class CompareTitlesUseCase(
         })
     }
 
-    private fun Set<Title>.deleteOutdatedForgottenTitles() = this.forEach { title ->
+    private suspend fun Set<Title>.deleteOutdatedForgottenTitles() = this.forEach { title ->
         val forgottenTitle = forgottenTitleSource.get(title.id) ?: return@forEach
         if (forgottenTitle.rating.age > title.rating.age) {
             forgottenTitleSource.delete(title)

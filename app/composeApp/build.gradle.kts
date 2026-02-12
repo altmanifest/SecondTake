@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -31,9 +32,14 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.kstore)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        webMain.dependencies {
+            implementation(libs.kstore.storage)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }

@@ -14,9 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.altmanifest.secondtake.application.CompareTitlesUseCase
+import com.altmanifest.secondtake.data.ForgottenTitlesSource
+import com.altmanifest.secondtake.data.Store
 import com.altmanifest.secondtake.domain.Comparison
 import com.altmanifest.secondtake.domain.Round
-import com.altmanifest.secondtake.mock.MockForgottenTitleSource
 import com.altmanifest.secondtake.mock.MockTitleOwner
 import com.altmanifest.secondtake.service.RoundFactory
 import com.altmanifest.secondtake.service.SessionFactory
@@ -96,7 +97,9 @@ fun SecondTakeApp(
                                 capacity = Round.Capacity(10)
                             )
                         ),
-                        forgottenTitleSource = MockForgottenTitleSource(),
+                        forgottenTitleSource = ForgottenTitlesSource(
+                            Store(createStore())
+                        ),
                         titleOwner = MockTitleOwner()
                     ))},
                 modifier = modifier
@@ -107,8 +110,9 @@ fun SecondTakeApp(
                 onBackClick = { navController.popBackStack() },
                 viewModel = remember {
                     ForgottenTitlesViewModel(
-                        titleOwner = MockTitleOwner(),
-                        forgottenTitleSource = MockForgottenTitleSource(),
+                        forgottenTitleSource = ForgottenTitlesSource(
+                           Store(createStore())
+                        ),
                     )},
                 modifier = modifier
             )

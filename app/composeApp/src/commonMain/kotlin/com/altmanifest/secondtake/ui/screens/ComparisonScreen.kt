@@ -17,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import com.altmanifest.secondtake.ui.components.ProgressBar
 import com.altmanifest.secondtake.ui.components.RadialMenu
 import com.altmanifest.secondtake.ui.components.SessionFinishedDialog
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ComparisonScreen(
@@ -43,6 +45,8 @@ fun ComparisonScreen(
     LaunchedEffect(Unit) {
         viewModel.startViewModel()
     }
+
+    val scope = rememberCoroutineScope()
 
     val state = viewModel.uiState
 
@@ -98,10 +102,12 @@ fun ComparisonScreen(
                         selectedPreference = Preference.FIRST
                         showDialog = true
                     },
-                    onClick = { viewModel.onRate(
-                        preference = Preference.FIRST,
-                        ratingStrength = Comparison.Rating.Strength.LOW
-                    ) }
+                    onClick = { scope.launch {
+                        viewModel.onRate(
+                            preference = Preference.FIRST,
+                            ratingStrength = Comparison.Rating.Strength.LOW
+                        )
+                    } }
                 )
                 // right card
                 ContentCard(
@@ -113,10 +119,12 @@ fun ComparisonScreen(
                         selectedPreference = Preference.SECOND
                         showDialog = true
                     },
-                    onClick = { viewModel.onRate(
+                    onClick = { scope.launch {
+                        viewModel.onRate(
                         preference = Preference.SECOND,
                         ratingStrength = Comparison.Rating.Strength.LOW
-                    ) }
+                        )
+                    } }
                 )
             }
             Box(
@@ -125,11 +133,14 @@ fun ComparisonScreen(
             ){
                 RadialMenu(
                     onActionTriggered = { direction ->
-                        when(direction) {
-                            MenuDirection.TOP -> viewModel.onForget(Choice.BOTH)
-                            MenuDirection.LEFT -> viewModel.onForget(Choice.FIRST)
-                            MenuDirection.RIGHT -> viewModel.onForget(Choice.SECOND)
-                            MenuDirection.BOTTOM -> viewModel.onSkip()
+                        scope.launch {
+                            when(direction) {
+                                MenuDirection.TOP -> viewModel.onForget(Choice.BOTH)
+                                MenuDirection.LEFT -> viewModel.onForget(Choice.FIRST)
+                                MenuDirection.RIGHT -> viewModel.onForget(Choice.SECOND)
+                                MenuDirection.BOTTOM -> viewModel.onSkip()
+                            }
+
                         }
                     }
                 )
@@ -146,17 +157,21 @@ fun ComparisonScreen(
                 onDismiss = { showDialog = false },
                 onBetterClick = {
                     selectedPreference?.let { pref ->
-                        viewModel.onRate(
-                            preference = pref,
-                            ratingStrength = Comparison.Rating.Strength.MEDIUM
-                        ) }
+                        scope.launch {
+                            viewModel.onRate(
+                                preference = pref,
+                                ratingStrength = Comparison.Rating.Strength.MEDIUM
+                            ) }
+                        }
                     showDialog = false
                 },
                 onBestClick = {
                     selectedPreference?.let { pref ->
-                        viewModel.onRate(
-                            preference = pref,
-                            ratingStrength = Comparison.Rating.Strength.HIGH)
+                        scope.launch {
+                            viewModel.onRate(
+                                preference = pref,
+                                ratingStrength = Comparison.Rating.Strength.HIGH)
+                        }
                     }
                     showDialog = false
                 }
