@@ -21,15 +21,11 @@ class ForgottenTitlesViewModel(
         refreshTitles()
     }
 
-    suspend fun onRestore(title: Title) {
+    fun onRestore(): Nothing = TODO("Will be implemented once the first provider is connected")
+
+    suspend fun onDelete(title: Title) {
         forgottenTitleSource.delete(title)
         refreshTitles()
-    }
-
-    fun onDelete(title: Title) {
-        // Currently TitleOwner does not support permanent deletion.
-        // This action could be implemented later.
-        // For now, we might want to just unforget it or do nothing.
     }
 
     private suspend fun refreshTitles() {
