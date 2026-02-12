@@ -38,7 +38,7 @@ fun ForgottenTitlesScreen(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
     ) {
         Header(
             onBackClick = onBackClick,

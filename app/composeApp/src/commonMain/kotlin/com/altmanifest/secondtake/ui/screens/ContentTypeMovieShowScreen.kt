@@ -22,7 +22,7 @@ fun ContentTypeMovieShowScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Header(heading = "Choose your content type", onBackClick = onBackButtonClicked)

@@ -33,7 +33,7 @@ fun SelectSeasonScreen(
     var selectedSeason by remember { mutableStateOf<String?>(null) }
 
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -61,7 +61,7 @@ fun SelectSeasonScreen(
                 text = "Continue",
                 enabled = selectedSeason != null,
                 onClick = {
-                    viewModel.selectSeason(selectedSeason!!);
+                    viewModel.selectSeason(viewModel.selectionNotNull(selectedSeason))
                     onContinueButtonClicked()
                 },
             )

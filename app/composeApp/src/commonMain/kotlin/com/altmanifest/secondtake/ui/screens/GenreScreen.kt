@@ -41,7 +41,7 @@ fun GenreScreen(
     }
 
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -75,7 +75,7 @@ fun GenreScreen(
                 text = "Continue",
                 enabled = selectedGenre != null,
                 onClick = {
-                    viewModel.selectGenre(selectedGenre!!)
+                    viewModel.selectGenre(viewModel.selectionNotNull(selectedGenre))
                     viewModel.submitSetup()
                     onContinueButtonClicked()
                 },

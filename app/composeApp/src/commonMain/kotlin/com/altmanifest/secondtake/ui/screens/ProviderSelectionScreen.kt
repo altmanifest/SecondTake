@@ -23,7 +23,7 @@ fun ProviderSelectionScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Header(heading = "Choose your provider", onBackClick = onBackButtonClicked)
@@ -31,7 +31,7 @@ fun ProviderSelectionScreen(
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.TopCenter) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 16.dp)
