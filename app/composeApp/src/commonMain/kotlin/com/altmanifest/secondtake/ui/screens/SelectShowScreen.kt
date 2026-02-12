@@ -40,7 +40,7 @@ fun SelectShowScreen(
     }
 
     Column(
-        modifier = modifier.padding(top = 80.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -74,7 +74,7 @@ fun SelectShowScreen(
                 text = "Continue",
                 enabled = selectedShow != null,
                 onClick = {
-                    viewModel.selectShow(selectedShow!!);
+                    viewModel.selectShow(viewModel.selectionNotNull(selectedShow))
                     onContinueButtonClicked()
                 }
             )

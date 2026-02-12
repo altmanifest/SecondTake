@@ -70,4 +70,9 @@ class ComparisonSetupViewModel: ViewModel() {
     fun submitSetup() {
         val state = _uiState.value
     }
+
+    fun selectionNotNull(selection: String?): String {
+        if (selection.isNullOrBlank()) return ""
+        return selection
+    }
 }
