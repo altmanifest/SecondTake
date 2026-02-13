@@ -69,7 +69,7 @@ fun ComparisonScreen(
     ) {
 
         Column(
-            modifier = modifier.padding(top = 40.dp),
+            modifier = modifier.padding(top = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Header(

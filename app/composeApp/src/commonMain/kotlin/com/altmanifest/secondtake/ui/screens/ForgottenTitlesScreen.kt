@@ -3,6 +3,8 @@ package com.altmanifest.secondtake.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,14 +38,15 @@ fun ForgottenTitlesScreen(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(top = 40.dp),
+        modifier = modifier.padding(top = 20.dp),
     ) {
         Header(
             onBackClick = onBackClick,
             heading = "Forgotten titles"
         )
+        Spacer(modifier = Modifier.fillMaxHeight(0.05f))
         Box(
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier.weight(weight = 1f)
         ){
             LazyColumn(

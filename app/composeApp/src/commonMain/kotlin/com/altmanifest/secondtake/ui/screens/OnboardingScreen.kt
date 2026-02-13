@@ -27,18 +27,18 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(top = 40.dp),
+        modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Header(heading = "Connect services")
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly,
+            verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 44.dp)
+                .padding(vertical = 16.dp)
         ) {
             IMDBButton(
                 enabled = false,
