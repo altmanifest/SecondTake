@@ -36,3 +36,17 @@ Comparing two similar titles at a time allows for more precise judgment and help
 | R19 | 5        | Link Filmweb-Account*                           | As a user, I want to be able to link my Filmweb-Account, so that I can re-evaluate my rated titles                                           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 \* Neither IMDb nor Filmweb provide public authentication mechanisms or officially supported API access for third-party applications to operate on its user data.
+
+## Integration with Onlyfilms
+Onlyfilms is a film rating platform and was programmed for another module in previous semester 
+for the IU International University of Applied Sciences. 
+
+Since the integration with IMDb or Filmweb was proven to be more complex than initially
+thought and would require reverse engineering or paying for their api, another thought emerged: Why not integrate
+a previous project?
+
+Onlyfilms already had a authentication system implemented, though there is no way to connect an Onlyfilms account
+with any third party app yet.
+
+Since this integration required extra steps to be taken, [a patch file](patches/onlyfilms-oauth.patch) has also
+been commited to illustrate the changes made to the Onlyfilms project in order to support the necessary Oauth2 Flow.
