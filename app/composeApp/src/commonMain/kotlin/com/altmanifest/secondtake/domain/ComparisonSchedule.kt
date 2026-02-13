@@ -19,8 +19,7 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
 
             val comparisons = this.groupBy { it.genre }.values
                 .flatMap { it.sortedBy { title -> title.rating.value } }
-                .createPairs(pairingPolicy)
-                .mapNotNull { it.toComparison(config).successOrNull() }
+                .tryCreateComparisons(config, pairingPolicy)
 
             return when {
                 comparisons.isEmpty() -> CreateResult.NoComparisons
@@ -28,11 +27,39 @@ class ComparisonSchedule private constructor(private val comparisons: List<Compa
             }
         }
 
-        private fun List<Title>.createPairs(pairingPolicy: (Pair<Title, Title>) -> Boolean): List<Pair<Title, Title>> =
-            this.windowed(size = 2, step = 2, partialWindows = false) {
-                val pair = it[0] to it[1]
-                if (pairingPolicy(pair)) pair else null
-            }.filterNotNull()
+        private fun List<Title>.tryCreateComparisons(comparisonConfig: Comparison.Config, pairingPolicy: (Pair<Title, Title>) -> Boolean): List<Comparison> {
+            val comparisons = mutableListOf<Comparison>()
+            val matchedPairIndices = mutableSetOf<Int>()
+
+            for (firstPairIndex in this.indices) {
+                if (firstPairIndex in matchedPairIndices) {
+                    continue
+                }
+
+                for (secondPairIndex in firstPairIndex + 1 until this.size) {
+                    if (secondPairIndex in matchedPairIndices) {
+                        continue
+                    }
+
+                    val pair = this[firstPairIndex] to this[secondPairIndex]
+
+                    if (!pairingPolicy(pair)) {
+                        continue
+                    }
+
+                    pair.toComparison(comparisonConfig).successOrNull()?.let { validComparison ->
+                        comparisons += validComparison
+                        matchedPairIndices.add(firstPairIndex)
+                        matchedPairIndices.add(secondPairIndex)
+                    }
+
+                    if (firstPairIndex in matchedPairIndices)  {
+                        break
+                    }
+                }
+            }
+            return comparisons
+        }
     }
 
     sealed class CreateResult {
