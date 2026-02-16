@@ -10,18 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.altmanifest.secondtake.ui.components.FilmwebButton
 import com.altmanifest.secondtake.ui.components.Header
-import com.altmanifest.secondtake.ui.components.IMDBButton
-import com.altmanifest.secondtake.ui.components.MockifyButton
-import com.altmanifest.secondtake.ui.components.OnlyFilmsButton
+import com.altmanifest.secondtake.ui.components.ProviderButton
+import com.altmanifest.secondtake.ui.viewmodel.ProviderSelectionViewModel
 
 @Composable
 fun ProviderSelectionScreen(
     onProviderButtonClicked: () -> Unit,
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: ProviderSelectionViewModel,
 ) {
+    val state = viewModel.uiState
+
     Column(
         modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -36,26 +37,13 @@ fun ProviderSelectionScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 16.dp)
             ) {
-                IMDBButton(
-                    enabled = false,
-                    onClick = { onProviderButtonClicked() },
-                    isLoading = false,
-                )
-                FilmwebButton(
-                    enabled = false,
-                    onClick = { onProviderButtonClicked() },
-                    isLoading = false,
-                )
-                OnlyFilmsButton(
-                    enabled = true,
-                    onClick = { onProviderButtonClicked() },
-                    isLoading = false,
-                )
-                MockifyButton(
-                    enabled = true,
-                    onClick = { onProviderButtonClicked() },
-                    isLoading = false,
-                )
+                state.connectedProviders.forEach {
+                    ProviderButton(
+                        provider = it.id,
+                        enabled = it.isActive,
+                        onClick = { onProviderButtonClicked() }
+                    )
+                }
             }
         }
     }
