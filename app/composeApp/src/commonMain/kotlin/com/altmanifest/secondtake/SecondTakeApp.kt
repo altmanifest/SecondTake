@@ -34,6 +34,7 @@ import com.altmanifest.secondtake.ui.screens.StartScreen
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonSetupViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
+import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
 import kotlin.time.Duration
 
 enum class SecondTakeRoutes {
@@ -78,7 +79,8 @@ fun SecondTakeApp(
         composable(route = SecondTakeRoutes.Onboarding.name) {
             OnboardingScreen(
                 onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Start.name) },
-                modifier = modifier
+                modifier = modifier,
+                viewmodel = OnboardingViewmodel()
             )
         }
         composable(route = SecondTakeRoutes.Start.name) {
