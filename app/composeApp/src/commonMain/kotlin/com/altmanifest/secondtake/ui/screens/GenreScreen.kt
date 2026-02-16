@@ -20,15 +20,16 @@ import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.SimpleList
 import com.altmanifest.secondtake.ui.components.SimpleSearchBar
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
-import com.altmanifest.secondtake.ui.viewmodel.ComparisonSetupViewModel
+import com.altmanifest.secondtake.ui.viewmodel.GenreViewModel
 
 @Composable
 fun GenreScreen(
-    viewModel: ComparisonSetupViewModel,
+    viewModel: GenreViewModel,
     onContinueButtonClicked: () -> Unit,
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    viewModel.loadGenres()
     val state = viewModel.uiState
     val availableGenres = state.value.availableGenres
 
@@ -74,11 +75,7 @@ fun GenreScreen(
             PrimaryButton(
                 text = "Continue",
                 enabled = selectedGenre != null,
-                onClick = {
-                    viewModel.selectGenre(viewModel.selectionNotNull(selectedGenre))
-                    viewModel.submitSetup()
-                    onContinueButtonClicked()
-                },
+                onClick = onContinueButtonClicked
             )
         }
     }
