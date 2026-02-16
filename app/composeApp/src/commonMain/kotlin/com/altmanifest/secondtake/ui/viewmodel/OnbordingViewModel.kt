@@ -8,7 +8,7 @@ import com.altmanifest.secondtake.ui.DefinedProvider
 import com.altmanifest.secondtake.ui.Provider
 
 data class OnboardingUiState(
-    val providers: List<Provider> = listOf()
+    val providers: List<AvailableProvider> = listOf()
 )
 
 class OnboardingViewmodel : ViewModel() {
@@ -18,11 +18,20 @@ class OnboardingViewmodel : ViewModel() {
     init {
         uiState = OnboardingUiState(
             providers = listOf(
-                Provider.Connected(DefinedProvider.IMDB),
-                Provider.Connected(DefinedProvider.FILMWEB),
-                Provider.Disconnected(DefinedProvider.ONLYFILMS) {},
-                Provider.Disconnected(DefinedProvider.MOCKIFY) {}
+                AvailableProvider.Connected(DefinedProvider.IMDB),
+                AvailableProvider.Connected(DefinedProvider.FILMWEB),
+                AvailableProvider.Disconnected(DefinedProvider.ONLYFILMS) {},
+                AvailableProvider.Disconnected(DefinedProvider.MOCKIFY) {}
             )
         )
     }
+}
+
+sealed class AvailableProvider : Provider {
+    data class Connected(override val id: DefinedProvider, override val isActive: Boolean = false) : AvailableProvider()
+    data class Disconnected(
+        override val id: DefinedProvider,
+        override val isActive: Boolean = true,
+        val onConnect: () -> Unit
+    ) : AvailableProvider()
 }
