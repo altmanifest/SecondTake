@@ -35,6 +35,7 @@ import com.altmanifest.secondtake.ui.viewmodel.ComparisonSetupViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
 import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
+import com.altmanifest.secondtake.ui.viewmodel.ProviderSelectionViewModel
 import kotlin.time.Duration
 
 enum class SecondTakeRoutes {
@@ -94,7 +95,8 @@ fun SecondTakeApp(
             ProviderSelectionScreen(
                 onProviderButtonClicked = { navController.navigate(route = SecondTakeRoutes.ContentTypeMovieShow.name) },
                 onBackButtonClicked = { navController.popBackStack() },
-                modifier = modifier
+                modifier = modifier,
+                viewModel = ProviderSelectionViewModel(),
             )
         }
         composable(route = SecondTakeRoutes.ContentTypeMovieShow.name) {
