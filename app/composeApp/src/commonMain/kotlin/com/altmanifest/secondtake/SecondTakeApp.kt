@@ -34,6 +34,7 @@ import com.altmanifest.secondtake.ui.screens.StartScreen
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonSetupViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ComparisonViewModel
 import com.altmanifest.secondtake.ui.viewmodel.ForgottenTitlesViewModel
+import com.altmanifest.secondtake.ui.viewmodel.GenreViewModel
 import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
 import com.altmanifest.secondtake.ui.viewmodel.ProviderSelectionViewModel
 import kotlin.time.Duration
@@ -61,6 +62,7 @@ fun SecondTakeApp(
         .fillMaxSize()
 
     val comparisonSetupViewModel = remember { ComparisonSetupViewModel() }
+    val mockTitleOwner = remember { MockTitleOwner() }
 
     NavHost(
         navController = navController,
@@ -119,7 +121,7 @@ fun SecondTakeApp(
         }
         composable(route = SecondTakeRoutes.Genre.name) {
             GenreScreen(
-                viewModel = comparisonSetupViewModel,
+                viewModel = GenreViewModel(genreAccessor = mockTitleOwner),
                 onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
@@ -159,7 +161,7 @@ fun SecondTakeApp(
                         forgottenTitleSource = ForgottenTitlesSource(
                             Store(createStore())
                         ),
-                        titleOwner = MockTitleOwner()
+                        titleOwner = mockTitleOwner
                     ))},
                 modifier = modifier
             )
