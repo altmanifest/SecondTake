@@ -13,12 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.altmanifest.secondtake.ui.Provider
 import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.ProviderButton
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
 import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
-import com.altmanifest.secondtake.ui.viewmodel.Provider
 
 @Composable
 fun OnboardingScreen(
