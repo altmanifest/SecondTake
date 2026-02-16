@@ -14,18 +14,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.altmanifest.secondtake.ui.components.PrimaryButton
-import com.altmanifest.secondtake.ui.components.FilmwebButton
 import com.altmanifest.secondtake.ui.components.Header
-import com.altmanifest.secondtake.ui.components.IMDBButton
-import com.altmanifest.secondtake.ui.components.MockifyButton
-import com.altmanifest.secondtake.ui.components.OnlyFilmsButton
+import com.altmanifest.secondtake.ui.components.ProviderButton
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
+import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
+import com.altmanifest.secondtake.ui.viewmodel.Provider
 
 @Composable
 fun OnboardingScreen(
     onContinueButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    viewmodel: OnboardingViewmodel
 ) {
+    val state = viewmodel.uiState
+
     Column(
         modifier = modifier.padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -40,26 +42,20 @@ fun OnboardingScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 16.dp)
         ) {
-            IMDBButton(
-                enabled = false,
-                onClick = { },
-                isLoading =false,
-            )
-            FilmwebButton(
-                enabled = false,
-                onClick = {  },
-                isLoading = false,
-            )
-            OnlyFilmsButton(
-                enabled = true,
-                onClick = {  },
-                isLoading = false,
-            )
-            MockifyButton(
-                enabled = true,
-                onClick = {  },
-                isLoading = false,
-            )
+            state.providers.forEach { provider ->
+                when (provider) {
+                    is Provider.Connected -> ProviderButton(
+                        provider = provider.id,
+                        enabled = provider.isActive
+                    )
+
+                    is Provider.Disconnected -> ProviderButton(
+                        provider = provider.id,
+                        enabled = provider.isActive,
+                        onClick = provider.onConnect
+                    )
+                }
+            }
         }
 
         Box(

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.altmanifest.secondtake.ui.DefinedProvider
 import com.altmanifest.secondtake.ui.theme.*
 import com.altmanifest.secondtake.ui.utility.darken
 import org.jetbrains.compose.resources.painterResource
@@ -82,7 +83,7 @@ fun BaseButton(
         } else {
             CircularProgressIndicator(
                 modifier = Modifier.fillMaxHeight(0.6f).aspectRatio(1f),
-                color = if(isButtonEnabled) buttonColor.contentColor else buttonColor.disabledContentColor
+                color = if (isButtonEnabled) buttonColor.contentColor else buttonColor.disabledContentColor
             )
         }
     }
@@ -108,7 +109,7 @@ fun PrimaryButton(
         contentPadding = contentPadding,
         cornerRadius = cornerRadius
     ) {
-        if(text != null) {
+        if (text != null) {
             Text(
                 text = text,
                 fontSize = 32.sp,
@@ -167,9 +168,9 @@ fun FilmwebButton(
                 .width(130.dp),
             contentScale = ContentScale.FillBounds,
             colorFilter = (
-                if (enabled) ColorFilter.tint(FilmWebButtonColor.contentColor)
-                else ColorFilter.tint(FilmWebButtonColor.disabledContentColor)
-            )
+                    if (enabled) ColorFilter.tint(FilmWebButtonColor.contentColor)
+                    else ColorFilter.tint(FilmWebButtonColor.disabledContentColor)
+                    )
         )
     }
 }
@@ -197,7 +198,8 @@ fun OnlyFilmsButton(
                 .fillMaxHeight(0.63f)
                 .aspectRatio(icon.intrinsicSize.width / icon.intrinsicSize.height),
         )
-        Text(text = "OnlyFilms",
+        Text(
+            text = "OnlyFilms",
             fontFamily = LatoFontFamily(),
             fontSize = 26.sp,
             fontWeight = FontWeight(700)
@@ -219,10 +221,26 @@ fun MockifyButton(
         isLoading = isLoading,
         modifier = modifier
     ) {
-        Text(text = "Mockify",
+        Text(
+            text = "Mockify",
             fontFamily = LatoFontFamily(),
             fontSize = 26.sp,
             fontWeight = FontWeight(700)
         )
+    }
+}
+
+@Composable
+fun ProviderButton(
+    provider: DefinedProvider,
+    enabled: Boolean,
+    isLoading: Boolean = false,
+    onClick: () -> Unit = { }
+) {
+    when (provider) {
+        DefinedProvider.IMDB -> IMDBButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.FILMWEB -> FilmwebButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.ONLYFILMS -> OnlyFilmsButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.MOCKIFY -> MockifyButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
     }
 }
