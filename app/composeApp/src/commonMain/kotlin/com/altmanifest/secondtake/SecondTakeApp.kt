@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -108,8 +109,8 @@ fun SecondTakeApp(
         }
         composable<Routes.Genre> {
             GenreScreen(
-                viewModel = remember { GenreViewModel(genreAccessor = mockTitleOwner) },
-                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison) },
+                viewModel = remember { GenreViewModel(genreAccessor = mockTitleOwner,) },
+                onContinueButtonClicked = { navController.navigate(Routes.Comparison(genre = it)) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
@@ -134,7 +135,8 @@ fun SecondTakeApp(
             ComparisonScreen(
                 onHomeButtonClicked = { navController.navigate(route = Routes.Start) },
                 onBackButtonClicked = { navController.popBackStack() },
-                viewModel = remember {ComparisonViewModel(
+                viewModel = viewModel {
+                    ComparisonViewModel(
                     useCase = CompareTitlesUseCase(
                         sessionFactory = SessionFactory(
                             roundFactory = RoundFactory(
@@ -149,7 +151,7 @@ fun SecondTakeApp(
                             Store(createStore())
                         ),
                         titleOwner = mockTitleOwner
-                    ))},
+                    ), savedStateHandle = it.savedStateHandle)},
                 modifier = modifier
             )
         }

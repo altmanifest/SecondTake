@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.SimpleList
@@ -26,25 +27,23 @@ import com.altmanifest.secondtake.ui.viewmodel.GenreViewModel
 @Composable
 fun GenreScreen(
     viewModel: GenreViewModel,
-    onContinueButtonClicked: () -> Unit,
+    onContinueButtonClicked: (String) -> Unit,
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val state = viewModel.uiState
-    val availableGenres = state.value.availableGenres
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val availableGenres = state.availableGenres
 
-    var selectedGenre by remember { mutableStateOf<GenreSelection?>(null) }
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredGenres = remember(searchQuery, availableGenres) {
-        if (searchQuery.isBlank()){
+        if (searchQuery.isBlank()) {
             availableGenres
-        }
-        else {
+        } else {
             availableGenres.filter {
-                when(it) {
+                when (it) {
                     GenreSelection.All -> true
-                    is GenreSelection.Genre -> it.genre.contains(searchQuery, ignoreCase = true)
+                    is GenreSelection.One -> it.genre.value.contains(searchQuery, ignoreCase = true)
                 }
             }
         }
@@ -64,14 +63,9 @@ fun GenreScreen(
         SimpleList(
             list = filteredGenres,
             modifier = Modifier.weight(1f),
-            selectedItem = selectedGenre,
-            onItemSelected = { genre -> selectedGenre = genre },
-            labelProvider = {
-                when(it) {
-                    GenreSelection.All -> "All"
-                    is GenreSelection.Genre -> it.genre
-                }
-            }
+            selectedItem = state.selectedGenre,
+            onItemSelected = viewModel::selectGenre,
+            labelProvider = { genreToString(selection = it) }
         )
 
         SimpleSearchBar(
@@ -89,9 +83,18 @@ fun GenreScreen(
         ) {
             PrimaryButton(
                 text = "Continue",
-                enabled = selectedGenre != null,
-                onClick = onContinueButtonClicked
+                enabled = state.isSelected,
+                onClick = {
+                    state.selectedGenre?.let {
+                        onContinueButtonClicked(genreToString(selection = it))
+                    }
+                }
             )
         }
     }
+}
+
+private fun genreToString(selection: GenreSelection): String = when (selection) {
+    GenreSelection.All -> "All"
+    is GenreSelection.One -> selection.genre.value
 }

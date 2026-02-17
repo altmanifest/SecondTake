@@ -13,7 +13,7 @@ class MockTitleOwner: TitleOwner, GenreAccessor {
     }
 
     override fun getByGenre(genre: Genre): Set<Title> {
-        return mockActionMovies.toSet()
+        return mockActionMovies.filter { it.genre == genre }.toSet()
     }
 
     override fun update(title: Title) {
