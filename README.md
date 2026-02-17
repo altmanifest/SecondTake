@@ -81,6 +81,9 @@ been commited to illustrate the changes made to the Onlyfilms project in order t
 
 Though Onlyfilms isn't integrated in this app yet, SecondTake's backend is prepared for a future integration.
 
+## Mockify as dummy-provider
+As we don't have any real providers integrated yet, we decided to implement a mock-provider called **Mockify**, so that we are still able to run and test the app.
+
 ## Wireframe and Prototype
 In the planing process of the app, we created a [Wireframe](https://excalidraw.com/#room=c25dc0e4c29782d508ab,vnMPNPXtShImigB_j-deHA) and a [Prototype](https://www.figma.com/design/QjbKN4ucVCR4rfIJRmnsR9/Prototyp?node-id=0-1&t=ujRSXogoxr9GDKU6-1).
 
