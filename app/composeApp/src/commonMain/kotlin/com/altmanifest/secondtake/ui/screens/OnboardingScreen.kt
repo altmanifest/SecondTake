@@ -44,7 +44,7 @@ fun OnboardingScreen(
         ) {
             state.providers.forEach { provider ->
                 when (provider) {
-                    is AvailableProvider.Connected -> ProviderButton(
+                    is AvailableProvider.Planned -> ProviderButton(
                         provider = provider.id,
                         enabled = provider.isActive
                     )
