@@ -1,6 +1,7 @@
 package com.altmanifest.secondtake.application
 
-interface ConnectedProviderSource {
+
+interface ProviderSource {
     suspend fun getAll(): List<AvailableProvider>
     suspend fun save(provider: AvailableProvider)
 }

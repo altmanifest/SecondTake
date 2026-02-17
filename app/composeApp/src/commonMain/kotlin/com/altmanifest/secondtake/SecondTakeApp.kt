@@ -16,9 +16,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.altmanifest.secondtake.application.AvailableProvider
 import com.altmanifest.secondtake.application.CompareTitlesUseCase
-import com.altmanifest.secondtake.application.ConnectedProviderUseCase
+import com.altmanifest.secondtake.application.ConnectProviderUseCase
 import com.altmanifest.secondtake.application.DefinedProvider
-import com.altmanifest.secondtake.data.ConnectedProviderSource
+import com.altmanifest.secondtake.data.ProviderSource
 import com.altmanifest.secondtake.data.ForgottenTitlesSource
 import com.altmanifest.secondtake.data.Store
 import com.altmanifest.secondtake.domain.Comparison
@@ -80,11 +80,11 @@ fun SecondTakeApp(
                 modifier = modifier,
                 viewmodel = remember {
                     OnboardingViewmodel(
-                        ConnectedProviderUseCase(
-                            source = ConnectedProviderSource(
+                        ConnectProviderUseCase(
+                            source = ProviderSource(
                                 store = store,
                             ),
-                            config = ConnectedProviderUseCase.Config(
+                            config = ConnectProviderUseCase.Config(
                                 availableProviders = listOf(
                                     AvailableProvider.Planned(DefinedProvider.IMDB),
                                     AvailableProvider.Planned(DefinedProvider.FILMWEB),
