@@ -108,7 +108,7 @@ fun SecondTakeApp(
         }
         composable<Routes.Genre> {
             GenreScreen(
-                viewModel = GenreViewModel(genreAccessor = mockTitleOwner),
+                viewModel = remember { GenreViewModel(genreAccessor = mockTitleOwner) },
                 onContinueButtonClicked = { navController.navigate(route = Routes.Comparison) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier

@@ -7,19 +7,29 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 data class GenreUiState(
-    val selectedGenre: String? = null,
-    val availableGenres: List<String> = emptyList(),
+    val selectedGenre: GenreSelection? = null,
+    val availableGenres: List<GenreSelection> = listOf(),
 )
 
 class GenreViewModel(private val genreAccessor: GenreAccessor) : ViewModel() {
     private val _uiState = MutableStateFlow(GenreUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        loadGenres()
+    }
+
     fun loadGenres() {
+        val genres = genreAccessor.getAvailableGenres().map { GenreSelection.Genre(it.value) }
         _uiState.update {
             it.copy(
-                availableGenres = genreAccessor.getAvailableGenres().map { genre -> genre.value }
+                availableGenres = listOf(GenreSelection.All) + genres,
             )
         }
     }
+}
+
+sealed class GenreSelection {
+    object All : GenreSelection()
+    data class Genre(val genre: String) : GenreSelection()
 }

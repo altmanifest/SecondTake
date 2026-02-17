@@ -47,7 +47,8 @@ fun SelectSeasonScreen(
             list = state.value.availableSeasons,
             modifier = Modifier.weight(1f),
             selectedItem = selectedSeason,
-            onItemSelected = { genre -> selectedSeason = genre }
+            onItemSelected = { genre -> selectedSeason = genre },
+            labelProvider = { it }
         )
 
         Box(

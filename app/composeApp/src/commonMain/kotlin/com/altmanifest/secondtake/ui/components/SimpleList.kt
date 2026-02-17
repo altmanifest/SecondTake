@@ -21,10 +21,11 @@ import com.altmanifest.secondtake.ui.theme.SurfaceColor
 import com.altmanifest.secondtake.ui.theme.TextColor
 
 @Composable
-fun SimpleList(
-    list: List<String>,
-    onItemSelected: (String?) -> Unit,
-    selectedItem: String?,
+fun <T> SimpleList(
+    list: List<T>,
+    onItemSelected: (T) -> Unit,
+    selectedItem: T?,
+    labelProvider: (T) -> String,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -43,11 +44,11 @@ fun SimpleList(
                     .fillMaxWidth()
                     .background(if(isSelected) TextColor else SurfaceColor)
                     .clickable(onClick = {
-                        if (isSelected) onItemSelected(null) else onItemSelected(item)
+                        onItemSelected(item)
                     })
             ) {
                 Text(
-                    text = item,
+                    text = labelProvider(item),
                     color = if(isSelected) SurfaceColor else TextColor,
                     textAlign = TextAlign.Center,
                     fontSize = 17.5.sp,
