@@ -87,10 +87,10 @@ fun SecondTakeApp(
                                 source = providerSource,
                                 config = ConnectProviderUseCase.Config(
                                     availableProviders = listOf(
-                                        AvailableProvider.Planned(DefinedProvider.IMDB),
-                                        AvailableProvider.Planned(DefinedProvider.FILMWEB),
-                                        AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
-                                        AvailableProvider.Disconnected(DefinedProvider.MOCKIFY)
+                                        AvailableProvider.Planned(DefinedProvider.Imdb),
+                                        AvailableProvider.Planned(DefinedProvider.Filmweb),
+                                        AvailableProvider.Planned(DefinedProvider.Onlyfilms),
+                                        AvailableProvider.Disconnected(DefinedProvider.Mockify)
                                     )
                                 )
                             )

@@ -238,9 +238,9 @@ fun ProviderButton(
     onClick: () -> Unit = { }
 ) {
     when (provider) {
-        DefinedProvider.IMDB -> IMDBButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
-        DefinedProvider.FILMWEB -> FilmwebButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
-        DefinedProvider.ONLYFILMS -> OnlyFilmsButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
-        DefinedProvider.MOCKIFY -> MockifyButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.Imdb-> IMDBButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.Filmweb -> FilmwebButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.Onlyfilms -> OnlyFilmsButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
+        DefinedProvider.Mockify -> MockifyButton(enabled = enabled, isLoading = isLoading, onClick = onClick)
     }
 }
