@@ -12,7 +12,7 @@ object Routes {
     @Serializable
     object ForgottenTitles
     @Serializable
-    object Comparison
+    data class Comparison(val genre: String)
     @Serializable
     object ContentTypeMovieShow
     @Serializable
