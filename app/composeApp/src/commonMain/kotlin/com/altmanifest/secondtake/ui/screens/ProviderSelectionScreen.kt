@@ -43,7 +43,10 @@ fun ProviderSelectionScreen(
                     ProviderButton(
                         provider = it.id,
                         enabled = it.isActive,
-                        onClick = { onProviderButtonClicked() }
+                        onClick = {
+                            viewModel.onProviderSelect(it.id)
+                            onProviderButtonClicked()
+                        }
                     )
                 }
             }

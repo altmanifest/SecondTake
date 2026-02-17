@@ -14,7 +14,10 @@ data class ProviderSelectionUiState(
     val connectedProviders: List<ConnectedProvider> = listOf()
 )
 
-class ProviderSelectionViewModel(private val providerSource: ProviderSource) : ViewModel() {
+class ProviderSelectionViewModel(
+    private val providerSource: ProviderSource,
+    private val selectProvider: (DefinedProvider) -> Unit
+) : ViewModel() {
     private val _uiState = MutableStateFlow(ProviderSelectionUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -22,6 +25,10 @@ class ProviderSelectionViewModel(private val providerSource: ProviderSource) : V
         viewModelScope.launch {
             loadConnectedProviders()
         }
+    }
+
+    fun onProviderSelect(provider: DefinedProvider) {
+        selectProvider(provider)
     }
 
     private suspend fun loadConnectedProviders() {
