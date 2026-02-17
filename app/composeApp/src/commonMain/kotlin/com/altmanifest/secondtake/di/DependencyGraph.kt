@@ -17,7 +17,7 @@ class DependencyGraph(private val store: Store) {
 
     fun selectProvider(provider: DefinedProvider) {
         activeContainer = when (provider) {
-            DefinedProvider.MOCKIFY -> MockifyProviderContainer(store)
+            DefinedProvider.Mockify -> MockifyProviderContainer(store)
             else -> TODO("Not implemented yet")
         }
     }

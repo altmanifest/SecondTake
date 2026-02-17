@@ -1,5 +1,6 @@
 package com.altmanifest.secondtake.data
 
+import com.altmanifest.secondtake.application.AvailableProvider
 import com.altmanifest.secondtake.domain.Title
 import io.github.xxfast.kstore.KStore
 import kotlinx.serialization.Serializable
@@ -22,6 +23,6 @@ class Store(private val store: KStore<Data>) {
     @Serializable
     data class Data(
         val forgottenTitles: MutableSet<Title> = mutableSetOf(),
-        val connectedProviders: MutableSet<String> = mutableSetOf(),
+        val connectedProviders: MutableSet<AvailableProvider> = mutableSetOf(),
     )
 }
