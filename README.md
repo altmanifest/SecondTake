@@ -10,6 +10,16 @@ As a result, many rankings become inconsistent, inflated, or simply outdated.
 This project aims to help users re-evaluate and organize previously watched titles by focusing on direct comparison rather than absolute scoring.
 Comparing two similar titles at a time allows for more precise judgment and helps naturally rebalance ratings across the entire library.
 
+## Setup
+This Setup guide is for IntelliJ Idea.
+
+1. After opening IntelliJ Idea, click on **Projects** on the left menu and then **Clone Repository** on the right side.
+2. Now in the left menu, choose **Repository URL**. For the version control you want to use **Git**. In the **URL** input field, paste the Repository URL of this project and choose the directory where you want to save this project. Lastly, click on **Clone**.
+3. When the IDE finished cloning the project, it opens the editor window. In the project file tree, navigate to `app -> composeApp` and open `build.gradle.kts`.
+4. At the top of the code window, you should see a warning saying "Code insight unavailable (related Gradle project not linked)." In this alert bar, click **Link Gradle project**.
+5. In the explorer window, select `build.gradle.kts` in the app folder. The IDE should now start the sync process. Note that you have to use **Java 24**; If you don't, the IDE will ask you to change it.
+6. After the Sync finished, you can click on the Gradle icon in the right sidebar. In the Gradle menu, click on `Tasks -> kotlin browser -> wasmJsBrowserDevelopmentRun`. The App will now start. The first start will take some minutes, afterwards it will start faster. Also, after a gradle configuration has been started for the first time, it's possible to start it easier by selecting the config and pressing **Play** at the top of the IDE.
+
 ## Requirements
 | ID  | Priority | Title                                           | User Story                                                                                                                                   | Acceptance Criteria                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 |-----|----------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -37,6 +47,24 @@ Comparing two similar titles at a time allows for more precise judgment and help
 
 \* Neither IMDb nor Filmweb provide public authentication mechanisms or officially supported API access for third-party applications to operate on its user data.
 
+## Implemented features
+All features have been successfully implemented except for the following:
+
+### Partly implemented features
++ Start session by show
++ Link Onlyfilms-Account
++ Rate individual episodes of a show
+
+### Missing features
++ Start session by franchise
++ Queue forgotten titles to rewatch
++ Go back to previous comparison
++ Unlink Account
++ Link IMDB-Account*
++ Link Filmweb-Account*
+
+\* See the disclaimer below the requirements table.
+
 ## Integration with Onlyfilms
 Onlyfilms is a film rating platform and was programmed for another module in previous semester 
 for the IU International University of Applied Sciences. 
@@ -50,6 +78,16 @@ with any third party app yet.
 
 Since this integration required extra steps to be taken, [a patch file](patches/onlyfilms-oauth.patch) has also
 been commited to illustrate the changes made to the Onlyfilms project in order to support the necessary Oauth2 Flow.
+
+Though Onlyfilms isn't integrated in this app yet, SecondTake's backend is prepared for a future integration.
+
+## Wireframe and Prototype
+In the planing process of the app, we created a [Wireframe](https://excalidraw.com/#room=c25dc0e4c29782d508ab,vnMPNPXtShImigB_j-deHA) and a [Prototype](https://www.figma.com/design/QjbKN4ucVCR4rfIJRmnsR9/Prototyp?node-id=0-1&t=ujRSXogoxr9GDKU6-1).
+
+### Wireframe
+![Screenshot of the wireframe](docs/images/Wireframe_Screenshot.png)
+### Prototype
+![Screenshot of the prototype](docs/images/Prototype_Screenshot.png)
 
 ## Data Layer with KStore
 [KStore](https://github.com/xxfast/KStore) is a tiny asynchronous Kotlin multiplatform library, which helps with saving and retrieving data
