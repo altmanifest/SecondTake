@@ -12,17 +12,20 @@ data class OnboardingUiState(
 )
 
 class OnboardingViewmodel : ViewModel() {
+    private val providers = mapOf(
+        DefinedProvider.IMDB to AvailableProvider.Planned(DefinedProvider.IMDB),
+        DefinedProvider.FILMWEB to AvailableProvider.Planned(DefinedProvider.FILMWEB),
+        DefinedProvider.ONLYFILMS to AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
+        DefinedProvider.MOCKIFY to AvailableProvider.Disconnected(DefinedProvider.MOCKIFY) {}
+    )
+
     var uiState by mutableStateOf(OnboardingUiState())
         private set
 
+
     init {
         uiState = OnboardingUiState(
-            providers = listOf(
-                AvailableProvider.Planned(DefinedProvider.IMDB),
-                AvailableProvider.Planned(DefinedProvider.FILMWEB),
-                AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
-                AvailableProvider.Disconnected(DefinedProvider.MOCKIFY) {}
-            )
+            providers = providers.values.toList()
         )
     }
 }
