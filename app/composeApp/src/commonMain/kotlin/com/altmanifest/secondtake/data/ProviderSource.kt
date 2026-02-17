@@ -1,10 +1,10 @@
 package com.altmanifest.secondtake.data
 
 import com.altmanifest.secondtake.application.AvailableProvider
-import com.altmanifest.secondtake.application.ConnectedProviderSource
+import com.altmanifest.secondtake.application.ProviderSource
 import com.altmanifest.secondtake.application.DefinedProvider
 
-class ConnectedProviderSource(private val store: Store) : ConnectedProviderSource {
+class ProviderSource(private val store: Store) : ProviderSource {
     override suspend fun getAll(): List<AvailableProvider> = store.get().connectedProviders.mapNotNull {
         try {
             AvailableProvider.Connected(DefinedProvider.valueOf(it))
