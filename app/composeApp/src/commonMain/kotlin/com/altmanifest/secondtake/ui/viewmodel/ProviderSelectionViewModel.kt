@@ -1,27 +1,35 @@
 package com.altmanifest.secondtake.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.altmanifest.secondtake.application.DefinedProvider
 import com.altmanifest.secondtake.application.Provider
+import com.altmanifest.secondtake.application.ProviderSource
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class ProviderSelectionUiState(
     val connectedProviders: List<ConnectedProvider> = listOf()
 )
 
-class ProviderSelectionViewModel : ViewModel() {
-    var uiState by mutableStateOf(ProviderSelectionUiState())
-        private set
+class ProviderSelectionViewModel(private val providerSource: ProviderSource) : ViewModel() {
+    private val _uiState = MutableStateFlow(ProviderSelectionUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-        uiState = ProviderSelectionUiState(
-            connectedProviders = listOf(
-                ConnectedProvider(DefinedProvider.MOCKIFY)
-            )
-        )
+        viewModelScope.launch {
+            loadConnectedProviders()
+        }
+    }
+
+    private suspend fun loadConnectedProviders() {
+        val connectedProviders = providerSource.getAll().map {
+            ConnectedProvider(id = it.id, isActive = !it.isActive)
+        }
+        _uiState.update { it.copy(connectedProviders = connectedProviders) }
     }
 }
 
-data class ConnectedProvider(override val id: DefinedProvider, override val isActive: Boolean = true) : Provider
+data class ConnectedProvider(override val id: DefinedProvider, override val isActive: Boolean) : Provider

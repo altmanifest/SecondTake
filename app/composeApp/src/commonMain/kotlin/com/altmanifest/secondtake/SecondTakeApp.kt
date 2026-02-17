@@ -56,6 +56,7 @@ fun SecondTakeApp(
     val comparisonSetupViewModel = remember { ComparisonSetupViewModel() }
     val mockTitleOwner = remember { MockTitleOwner() }
     val store = remember { Store(createStore()) }
+    val providerSource = remember { ProviderSource(store) }
 
     NavHost(
         navController = navController,
@@ -81,9 +82,7 @@ fun SecondTakeApp(
                 viewmodel = remember {
                     OnboardingViewmodel(
                         ConnectProviderUseCase(
-                            source = ProviderSource(
-                                store = store,
-                            ),
+                            source = providerSource,
                             config = ConnectProviderUseCase.Config(
                                 availableProviders = listOf(
                                     AvailableProvider.Planned(DefinedProvider.IMDB),
@@ -109,7 +108,7 @@ fun SecondTakeApp(
                 onProviderButtonClicked = { navController.navigate(route = Routes.ContentTypeMovieShow) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier,
-                viewModel = ProviderSelectionViewModel(),
+                viewModel = ProviderSelectionViewModel(providerSource),
             )
         }
         composable<Routes.ContentTypeMovieShow> {
