@@ -1,4 +1,4 @@
-package com.altmanifest.secondtake.ui
+package com.altmanifest.secondtake.application
 
 interface Provider {
     val id: DefinedProvider
