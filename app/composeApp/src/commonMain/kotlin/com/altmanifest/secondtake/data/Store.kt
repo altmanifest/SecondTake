@@ -22,5 +22,6 @@ class Store(private val store: KStore<Data>) {
     @Serializable
     data class Data(
         val forgottenTitles: MutableSet<Title> = mutableSetOf(),
+        val connectedProviders: MutableSet<String> = mutableSetOf(),
     )
 }

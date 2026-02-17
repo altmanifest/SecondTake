@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.altmanifest.secondtake.ui.DefinedProvider
-import com.altmanifest.secondtake.ui.Provider
+import com.altmanifest.secondtake.application.DefinedProvider
+import com.altmanifest.secondtake.application.Provider
 
 data class ProviderSelectionUiState(
     val connectedProviders: List<ConnectedProvider> = listOf()

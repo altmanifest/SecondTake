@@ -10,15 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.altmanifest.secondtake.application.AvailableProvider
 import com.altmanifest.secondtake.ui.components.PrimaryButton
 import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.ProviderButton
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
-import com.altmanifest.secondtake.ui.viewmodel.AvailableProvider
 import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
+import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
@@ -26,7 +31,8 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
     viewmodel: OnboardingViewmodel
 ) {
-    val state = viewmodel.uiState
+    val scope = rememberCoroutineScope()
+    val state by viewmodel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier.padding(top = 20.dp),
@@ -44,6 +50,11 @@ fun OnboardingScreen(
         ) {
             state.providers.forEach { provider ->
                 when (provider) {
+                    is AvailableProvider.Connected -> ProviderButton(
+                        provider = provider.id,
+                        enabled = provider.isActive
+                    )
+
                     is AvailableProvider.Planned -> ProviderButton(
                         provider = provider.id,
                         enabled = provider.isActive
@@ -52,7 +63,11 @@ fun OnboardingScreen(
                     is AvailableProvider.Disconnected -> ProviderButton(
                         provider = provider.id,
                         enabled = provider.isActive,
-                        onClick = provider.onConnect
+                        onClick = {
+                            scope.launch {
+                                viewmodel.connectProvider(provider)
+                            }
+                        }
                     )
                 }
             }
@@ -67,7 +82,7 @@ fun OnboardingScreen(
         ) {
             PrimaryButton(
                 text = "Continue",
-                enabled = true,
+                enabled = state.isOneProviderConnected,
                 onClick = onContinueButtonClicked,
                 isLoading = false,
             )

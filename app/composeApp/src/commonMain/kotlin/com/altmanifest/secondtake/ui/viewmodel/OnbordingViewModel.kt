@@ -1,29 +1,22 @@
 package com.altmanifest.secondtake.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.altmanifest.secondtake.ui.DefinedProvider
-import com.altmanifest.secondtake.ui.Provider
+import com.altmanifest.secondtake.application.AvailableProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class OnboardingUiState(
-    val providers: List<AvailableProvider> = listOf()
+    val providers: List<AvailableProvider> = listOf(),
+    val isOneProviderConnected: Boolean = false
 )
 
-class OnboardingViewmodel(val source: ConnectedProviderSource) : ViewModel() {
-    private val providers = listOf(
-        AvailableProvider.Planned(DefinedProvider.IMDB),
-        AvailableProvider.Planned(DefinedProvider.FILMWEB),
-        AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
-        AvailableProvider.Disconnected(DefinedProvider.MOCKIFY)
-        )
+class OnboardingViewmodel(val useCase: ConnectedProviderUseCase) : ViewModel() {
 
-    var uiState by mutableStateOf(OnboardingUiState())
-        private set
-
+    private val _uiState = MutableStateFlow(OnboardingUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -32,18 +25,15 @@ class OnboardingViewmodel(val source: ConnectedProviderSource) : ViewModel() {
     }
 
     suspend fun loadProviders() {
-        val providers = source.getAll()
-        val existingIds = providers.map { it.id }
-        val disconnectedProviders = this.providers.filter { it.id !in existingIds }
-
-       uiState = uiState.copy(providers = providers + disconnectedProviders)
+        val providers = useCase.getConnectedProviders()
+        _uiState.update { it.copy(
+            providers = providers,
+            isOneProviderConnected = providers.any { provider -> provider is AvailableProvider.Connected }
+        ) }
     }
-}
 
-sealed class AvailableProvider : Provider {
-    data class Planned(override val id: DefinedProvider, override val isActive: Boolean = false) : AvailableProvider()
-    data class Disconnected(
-        override val id: DefinedProvider,
-        override val isActive: Boolean = true
-    ) : AvailableProvider()
+    suspend fun connectProvider(provider: AvailableProvider) {
+        useCase.connectProvider(provider)
+        loadProviders()
+    }
 }

@@ -14,7 +14,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.altmanifest.secondtake.application.AvailableProvider
 import com.altmanifest.secondtake.application.CompareTitlesUseCase
+import com.altmanifest.secondtake.application.ConnectedProviderUseCase
+import com.altmanifest.secondtake.application.DefinedProvider
+import com.altmanifest.secondtake.data.ConnectedProviderSource
 import com.altmanifest.secondtake.data.ForgottenTitlesSource
 import com.altmanifest.secondtake.data.Store
 import com.altmanifest.secondtake.domain.Comparison
@@ -51,6 +55,7 @@ fun SecondTakeApp(
 
     val comparisonSetupViewModel = remember { ComparisonSetupViewModel() }
     val mockTitleOwner = remember { MockTitleOwner() }
+    val store = remember { Store(createStore()) }
 
     NavHost(
         navController = navController,
@@ -59,19 +64,37 @@ fun SecondTakeApp(
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(durationMillis = 500)
-            )},
+            )
+        },
         popExitTransition = {
             slideOutOfContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(durationMillis = 500)
-            )},
+            )
+        },
         modifier = modifier
     ) {
         composable<Routes.Onboarding> {
             OnboardingScreen(
                 onContinueButtonClicked = { navController.navigate(route = Routes.Start) },
                 modifier = modifier,
-                viewmodel = OnboardingViewmodel()
+                viewmodel = remember {
+                    OnboardingViewmodel(
+                        ConnectedProviderUseCase(
+                            source = ConnectedProviderSource(
+                                store = store,
+                            ),
+                            config = ConnectedProviderUseCase.Config(
+                                availableProviders = listOf(
+                                    AvailableProvider.Planned(DefinedProvider.IMDB),
+                                    AvailableProvider.Planned(DefinedProvider.FILMWEB),
+                                    AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
+                                    AvailableProvider.Disconnected(DefinedProvider.MOCKIFY)
+                                )
+                            )
+                        )
+                    )
+                }
             )
         }
         composable<Routes.Start> {
@@ -109,7 +132,7 @@ fun SecondTakeApp(
         }
         composable<Routes.Genre> {
             GenreScreen(
-                viewModel = remember { GenreViewModel(genreAccessor = mockTitleOwner,) },
+                viewModel = remember { GenreViewModel(genreAccessor = mockTitleOwner) },
                 onContinueButtonClicked = { navController.navigate(Routes.Comparison(genre = it)) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
@@ -137,21 +160,23 @@ fun SecondTakeApp(
                 onBackButtonClicked = { navController.popBackStack() },
                 viewModel = viewModel {
                     ComparisonViewModel(
-                    useCase = CompareTitlesUseCase(
-                        sessionFactory = SessionFactory(
-                            roundFactory = RoundFactory(
-                                comparisonConfig = Comparison.Config(
-                                    maxPointDifference = 1.0,
-                                    minRatingAge = Duration.ZERO
-                                ),
-                                capacity = Round.Capacity(10)
-                            )
-                        ),
-                        forgottenTitleSource = ForgottenTitlesSource(
-                            Store(createStore())
-                        ),
-                        titleOwner = mockTitleOwner
-                    ), savedStateHandle = it.savedStateHandle)},
+                        useCase = CompareTitlesUseCase(
+                            sessionFactory = SessionFactory(
+                                roundFactory = RoundFactory(
+                                    comparisonConfig = Comparison.Config(
+                                        maxPointDifference = 1.0,
+                                        minRatingAge = Duration.ZERO
+                                    ),
+                                    capacity = Round.Capacity(10)
+                                )
+                            ),
+                            forgottenTitleSource = ForgottenTitlesSource(
+                                store
+                            ),
+                            titleOwner = mockTitleOwner
+                        ), savedStateHandle = it.savedStateHandle
+                    )
+                },
                 modifier = modifier
             )
         }
@@ -161,9 +186,10 @@ fun SecondTakeApp(
                 viewModel = remember {
                     ForgottenTitlesViewModel(
                         forgottenTitleSource = ForgottenTitlesSource(
-                           Store(createStore())
+                            store
                         ),
-                    )},
+                    )
+                },
                 modifier = modifier
             )
         }
