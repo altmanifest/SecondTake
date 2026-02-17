@@ -20,6 +20,7 @@ import com.altmanifest.secondtake.ui.components.Header
 import com.altmanifest.secondtake.ui.components.SimpleList
 import com.altmanifest.secondtake.ui.components.SimpleSearchBar
 import com.altmanifest.secondtake.ui.theme.SurfaceColor
+import com.altmanifest.secondtake.ui.viewmodel.GenreSelection
 import com.altmanifest.secondtake.ui.viewmodel.GenreViewModel
 
 @Composable
@@ -29,16 +30,24 @@ fun GenreScreen(
     onBackButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    viewModel.loadGenres()
     val state = viewModel.uiState
     val availableGenres = state.value.availableGenres
 
-    var selectedGenre by remember { mutableStateOf<String?>(null) }
+    var selectedGenre by remember { mutableStateOf<GenreSelection?>(null) }
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredGenres = remember(searchQuery, availableGenres) {
-        if (searchQuery.isBlank()) availableGenres
-        else availableGenres.filter { it.contains(searchQuery, ignoreCase = true) }
+        if (searchQuery.isBlank()){
+            availableGenres
+        }
+        else {
+            availableGenres.filter {
+                when(it) {
+                    GenreSelection.All -> true
+                    is GenreSelection.Genre -> it.genre.contains(searchQuery, ignoreCase = true)
+                }
+            }
+        }
     }
 
     Column(
@@ -56,7 +65,13 @@ fun GenreScreen(
             list = filteredGenres,
             modifier = Modifier.weight(1f),
             selectedItem = selectedGenre,
-            onItemSelected = { genre -> selectedGenre = genre }
+            onItemSelected = { genre -> selectedGenre = genre },
+            labelProvider = {
+                when(it) {
+                    GenreSelection.All -> "All"
+                    is GenreSelection.Genre -> it.genre
+                }
+            }
         )
 
         SimpleSearchBar(

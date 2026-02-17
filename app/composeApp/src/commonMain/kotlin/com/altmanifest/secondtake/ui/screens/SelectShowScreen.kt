@@ -54,7 +54,8 @@ fun SelectShowScreen(
             list = filteredShows,
             modifier = Modifier.weight(1f),
             selectedItem = selectedShow,
-            onItemSelected = { show -> selectedShow = show }
+            onItemSelected = { show -> selectedShow = show },
+            labelProvider = { it }
         )
 
         SimpleSearchBar(
