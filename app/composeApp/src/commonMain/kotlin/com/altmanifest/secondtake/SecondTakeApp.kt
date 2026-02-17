@@ -39,19 +39,6 @@ import com.altmanifest.secondtake.ui.viewmodel.OnboardingViewmodel
 import com.altmanifest.secondtake.ui.viewmodel.ProviderSelectionViewModel
 import kotlin.time.Duration
 
-enum class SecondTakeRoutes {
-    Onboarding,
-    Start,
-    ProviderSelection,
-    ForgottenTitles,
-    Comparison,
-    ContentTypeMovieShow,
-    ContentTypeShowEpisode,
-    Genre,
-    SelectShow,
-    SelectSeason,
-}
-
 @Composable
 fun SecondTakeApp(
     navController: NavHostController = rememberNavController(),
@@ -66,7 +53,7 @@ fun SecondTakeApp(
 
     NavHost(
         navController = navController,
-        startDestination = SecondTakeRoutes.Onboarding.name,
+        startDestination = Routes.Onboarding.name,
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -79,73 +66,73 @@ fun SecondTakeApp(
             )},
         modifier = modifier
     ) {
-        composable(route = SecondTakeRoutes.Onboarding.name) {
+        composable(route = Routes.Onboarding.name) {
             OnboardingScreen(
-                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Start.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Start.name) },
                 modifier = modifier,
                 viewmodel = OnboardingViewmodel()
             )
         }
-        composable(route = SecondTakeRoutes.Start.name) {
+        composable(route = Routes.Start.name) {
             StartScreen(
-                onCompareButtonClicked = { navController.navigate(route = SecondTakeRoutes.ProviderSelection.name) },
-                onForgottenTitlesLinkClicked = { navController.navigate(route = SecondTakeRoutes.ForgottenTitles.name) },
+                onCompareButtonClicked = { navController.navigate(route = Routes.ProviderSelection.name) },
+                onForgottenTitlesLinkClicked = { navController.navigate(route = Routes.ForgottenTitles.name) },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.ProviderSelection.name) {
+        composable(route = Routes.ProviderSelection.name) {
             ProviderSelectionScreen(
-                onProviderButtonClicked = { navController.navigate(route = SecondTakeRoutes.ContentTypeMovieShow.name) },
+                onProviderButtonClicked = { navController.navigate(route = Routes.ContentTypeMovieShow.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier,
                 viewModel = ProviderSelectionViewModel(),
             )
         }
-        composable(route = SecondTakeRoutes.ContentTypeMovieShow.name) {
+        composable(route = Routes.ContentTypeMovieShow.name) {
             ContentTypeMovieShowScreen(
                 viewModel = comparisonSetupViewModel,
-                onMovieButtonClicked = { navController.navigate(route = SecondTakeRoutes.Genre.name) },
-                onShowButtonClicked = { navController.navigate(route = SecondTakeRoutes.ContentTypeShowEpisode.name) },
+                onMovieButtonClicked = { navController.navigate(route = Routes.Genre.name) },
+                onShowButtonClicked = { navController.navigate(route = Routes.ContentTypeShowEpisode.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.ContentTypeShowEpisode.name) {
+        composable(route = Routes.ContentTypeShowEpisode.name) {
             ContentTypeShowEpisodeScreen(
                 viewModel = comparisonSetupViewModel,
-                onEpisodeButtonClicked = { navController.navigate(route = SecondTakeRoutes.SelectShow.name) },
-                onShowButtonClicked = { navController.navigate(route = SecondTakeRoutes.Genre.name) },
+                onEpisodeButtonClicked = { navController.navigate(route = Routes.SelectShow.name) },
+                onShowButtonClicked = { navController.navigate(route = Routes.Genre.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.Genre.name) {
+        composable(route = Routes.Genre.name) {
             GenreScreen(
                 viewModel = GenreViewModel(genreAccessor = mockTitleOwner),
-                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.SelectShow.name) {
+        composable(route = Routes.SelectShow.name) {
             SelectShowScreen(
                 viewModel = comparisonSetupViewModel,
-                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.SelectSeason.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.SelectSeason.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.SelectSeason.name) {
+        composable(route = Routes.SelectSeason.name) {
             SelectSeasonScreen(
                 viewModel = comparisonSetupViewModel,
-                onContinueButtonClicked = { navController.navigate(route = SecondTakeRoutes.Comparison.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.Comparison.name) {
+        composable(route = Routes.Comparison.name) {
             ComparisonScreen(
-                onHomeButtonClicked = { navController.navigate(route = SecondTakeRoutes.Start.name) },
+                onHomeButtonClicked = { navController.navigate(route = Routes.Start.name) },
                 onBackButtonClicked = { navController.popBackStack() },
                 viewModel = remember {ComparisonViewModel(
                     useCase = CompareTitlesUseCase(
@@ -166,7 +153,7 @@ fun SecondTakeApp(
                 modifier = modifier
             )
         }
-        composable(route = SecondTakeRoutes.ForgottenTitles.name) {
+        composable(route = Routes.ForgottenTitles.name) {
             ForgottenTitlesScreen(
                 onBackClick = { navController.popBackStack() },
                 viewModel = remember {
