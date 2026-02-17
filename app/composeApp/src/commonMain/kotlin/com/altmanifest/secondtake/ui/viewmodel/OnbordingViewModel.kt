@@ -18,9 +18,9 @@ class OnboardingViewmodel : ViewModel() {
     init {
         uiState = OnboardingUiState(
             providers = listOf(
-                AvailableProvider.Connected(DefinedProvider.IMDB),
-                AvailableProvider.Connected(DefinedProvider.FILMWEB),
-                AvailableProvider.Disconnected(DefinedProvider.ONLYFILMS) {},
+                AvailableProvider.Planned(DefinedProvider.IMDB),
+                AvailableProvider.Planned(DefinedProvider.FILMWEB),
+                AvailableProvider.Planned(DefinedProvider.ONLYFILMS),
                 AvailableProvider.Disconnected(DefinedProvider.MOCKIFY) {}
             )
         )
@@ -28,7 +28,7 @@ class OnboardingViewmodel : ViewModel() {
 }
 
 sealed class AvailableProvider : Provider {
-    data class Connected(override val id: DefinedProvider, override val isActive: Boolean = false) : AvailableProvider()
+    data class Planned(override val id: DefinedProvider, override val isActive: Boolean = false) : AvailableProvider()
     data class Disconnected(
         override val id: DefinedProvider,
         override val isActive: Boolean = true,
