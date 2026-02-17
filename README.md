@@ -50,3 +50,12 @@ with any third party app yet.
 
 Since this integration required extra steps to be taken, [a patch file](patches/onlyfilms-oauth.patch) has also
 been commited to illustrate the changes made to the Onlyfilms project in order to support the necessary Oauth2 Flow.
+
+## Data Layer with KStore
+[KStore](https://github.com/xxfast/KStore) is a tiny asynchronous Kotlin multiplatform library, which helps with saving and retrieving data
+from different places based on the platform it implemented on.
+
+Since this project was meant to be targeting Web (wasm/js) primarily the `kstore-storage` package
+helped with (de)serialising JSON and saving the domain objects into `LocalStorage`. 
+Since Wasm support for Kotlin Multiplatform is relatively new, KStore saved some of the implementation time,
+which would be necessery to implement the functionality in the Browser API directly.
