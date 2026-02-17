@@ -53,7 +53,7 @@ fun SecondTakeApp(
 
     NavHost(
         navController = navController,
-        startDestination = Routes.Onboarding.name,
+        startDestination = Routes.Onboarding,
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -66,73 +66,73 @@ fun SecondTakeApp(
             )},
         modifier = modifier
     ) {
-        composable(route = Routes.Onboarding.name) {
+        composable<Routes.Onboarding> {
             OnboardingScreen(
-                onContinueButtonClicked = { navController.navigate(route = Routes.Start.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Start) },
                 modifier = modifier,
                 viewmodel = OnboardingViewmodel()
             )
         }
-        composable(route = Routes.Start.name) {
+        composable<Routes.Start> {
             StartScreen(
-                onCompareButtonClicked = { navController.navigate(route = Routes.ProviderSelection.name) },
-                onForgottenTitlesLinkClicked = { navController.navigate(route = Routes.ForgottenTitles.name) },
+                onCompareButtonClicked = { navController.navigate(route = Routes.ProviderSelection) },
+                onForgottenTitlesLinkClicked = { navController.navigate(route = Routes.ForgottenTitles) },
                 modifier = modifier
             )
         }
-        composable(route = Routes.ProviderSelection.name) {
+        composable<Routes.ProviderSelection> {
             ProviderSelectionScreen(
-                onProviderButtonClicked = { navController.navigate(route = Routes.ContentTypeMovieShow.name) },
+                onProviderButtonClicked = { navController.navigate(route = Routes.ContentTypeMovieShow) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier,
                 viewModel = ProviderSelectionViewModel(),
             )
         }
-        composable(route = Routes.ContentTypeMovieShow.name) {
+        composable<Routes.ContentTypeMovieShow> {
             ContentTypeMovieShowScreen(
                 viewModel = comparisonSetupViewModel,
-                onMovieButtonClicked = { navController.navigate(route = Routes.Genre.name) },
-                onShowButtonClicked = { navController.navigate(route = Routes.ContentTypeShowEpisode.name) },
+                onMovieButtonClicked = { navController.navigate(route = Routes.Genre) },
+                onShowButtonClicked = { navController.navigate(route = Routes.ContentTypeShowEpisode) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = Routes.ContentTypeShowEpisode.name) {
+        composable<Routes.ContentTypeShowEpisode> {
             ContentTypeShowEpisodeScreen(
                 viewModel = comparisonSetupViewModel,
-                onEpisodeButtonClicked = { navController.navigate(route = Routes.SelectShow.name) },
-                onShowButtonClicked = { navController.navigate(route = Routes.Genre.name) },
+                onEpisodeButtonClicked = { navController.navigate(route = Routes.SelectShow) },
+                onShowButtonClicked = { navController.navigate(route = Routes.Genre) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = Routes.Genre.name) {
+        composable<Routes.Genre> {
             GenreScreen(
                 viewModel = GenreViewModel(genreAccessor = mockTitleOwner),
-                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = Routes.SelectShow.name) {
+        composable<Routes.SelectShow> {
             SelectShowScreen(
                 viewModel = comparisonSetupViewModel,
-                onContinueButtonClicked = { navController.navigate(route = Routes.SelectSeason.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.SelectSeason) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = Routes.SelectSeason.name) {
+        composable<Routes.SelectSeason> {
             SelectSeasonScreen(
                 viewModel = comparisonSetupViewModel,
-                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison.name) },
+                onContinueButtonClicked = { navController.navigate(route = Routes.Comparison) },
                 onBackButtonClicked = { navController.popBackStack() },
                 modifier = modifier
             )
         }
-        composable(route = Routes.Comparison.name) {
+        composable<Routes.Comparison> {
             ComparisonScreen(
-                onHomeButtonClicked = { navController.navigate(route = Routes.Start.name) },
+                onHomeButtonClicked = { navController.navigate(route = Routes.Start) },
                 onBackButtonClicked = { navController.popBackStack() },
                 viewModel = remember {ComparisonViewModel(
                     useCase = CompareTitlesUseCase(
@@ -153,7 +153,7 @@ fun SecondTakeApp(
                 modifier = modifier
             )
         }
-        composable(route = Routes.ForgottenTitles.name) {
+        composable<Routes.ForgottenTitles> {
             ForgottenTitlesScreen(
                 onBackClick = { navController.popBackStack() },
                 viewModel = remember {
